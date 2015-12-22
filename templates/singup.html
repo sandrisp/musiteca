@@ -26,7 +26,12 @@ function valid_insert_user(){
 	success = function(respuesta) { 
 
 			if(respuesta["valido"]){
-				return_data = true;
+
+				action="{{ url_for('singup')  }}"
+				$("form[name=singup]").attr("action", action);
+				$("form[name=singup]").removeAttr("onsubmit");
+				$("form[name=singup]").submit();
+
 				return true;
 			}
 
@@ -35,19 +40,21 @@ function valid_insert_user(){
 			$.each(error, function(i, item) {
 				$('input[name='+i+']').closest("div").addClass("has-error");
 			});
-			return_data = false;
+
+			$("form[name=singup]").removeAttr("action");
 			return false;
 		}
 	dataType = "json";
-	async = false;
-	$.ajax({method: "POST",url: url, data: data, success: success, dataType: dataType, async:async});
-	return return_data;
+	
+	$.ajax({method: "POST",url: url, data: data, success: success, dataType: dataType});
+
+	return false;
 }
 
 
 </script>
 
-<form name="singup" action="{{ url_for('singup')  }}" onsubmit="return valid_insert_user()" method="POST">
+<form name="singup" onsubmit="return valid_insert_user()" method="POST">
 	<div style="margin-bottom: 25px" class="input-group">
 		<label for="nombre" class="input-group-addon">
 			<span class="glyphicon glyphicon-user"></span>
