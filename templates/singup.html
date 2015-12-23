@@ -8,51 +8,54 @@
 	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
 	<title>Ingresar</title>
+
+	<script type="text/javascript">
+	
+		$(document).ready(function(){
+
+		})
+
+		function valid_insert_user(){ 
+
+			url = "{{ url_for('valid_insert_user')  }}";
+			data = $("form[name='singup']").serialize();
+
+			var return_data = "hola";
+			success = function(respuesta) { 
+
+					if(respuesta["valido"]){
+
+						action="{{ url_for('singup')  }}"
+						$("form[name=singup]").attr("action", action);
+						$("form[name=singup]").removeAttr("onsubmit");
+						$("form[name=singup]").submit();
+
+						return true;
+					}
+
+					$('form[name=singup] input').closest("div").removeClass("has-error");
+					error = respuesta["error"];
+					$.each(error, function(i, item) {
+						$('input[name='+i+']').closest("div").addClass("has-error");
+					});
+
+					$("form[name=singup]").removeAttr("action");
+					return false;
+				}
+			dataType = "json";
+
+			$.ajax({method: "POST",url: url, data: data, success: success, dataType: dataType});
+
+			return false;
+		}
+
+
+	</script>
+
+
 </head>
 <body>
 
-<script type="text/javascript">
-	
-$(document).ready(function(){
-
-})
-
-function valid_insert_user(){ 
-
-	url = "{{ url_for('valid_insert_user')  }}";
-	data = $("form[name='singup']").serialize();
-
-	var return_data = "hola";
-	success = function(respuesta) { 
-
-			if(respuesta["valido"]){
-
-				action="{{ url_for('singup')  }}"
-				$("form[name=singup]").attr("action", action);
-				$("form[name=singup]").removeAttr("onsubmit");
-				$("form[name=singup]").submit();
-
-				return true;
-			}
-
-			$('form[name=singup] input').closest("div").removeClass("has-error");
-			error = respuesta["error"];
-			$.each(error, function(i, item) {
-				$('input[name='+i+']').closest("div").addClass("has-error");
-			});
-
-			$("form[name=singup]").removeAttr("action");
-			return false;
-		}
-	dataType = "json";
-	
-	$.ajax({method: "POST",url: url, data: data, success: success, dataType: dataType});
-
-	return false;
-}
-
-
-</script>
 
 <form name="singup" onsubmit="return valid_insert_user()" method="POST">
 	<div style="margin-bottom: 25px" class="input-group">
@@ -72,6 +75,7 @@ function valid_insert_user(){
 			<span class="glyphicon glyphicon-lock"></span>
 		</label>
 		<input name="password" type="password" class="form-control" value="" placeholder="Contraseña">
+		<span class="glyphicon glyphicon-lock form-control-feedback" aria-hidden="true"></span>
 	</div>
 	<div style="margin-bottom: 25px" class="input-group">
 		<label for="correo" class="input-group-addon">
