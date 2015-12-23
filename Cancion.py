@@ -49,8 +49,6 @@ def valid_insert_cancion(cancion):
 
 	return salida
 
-
-
 def insert_cancion(cancion):
 	
 	respuesta = valid_insert_cancion(cancion)

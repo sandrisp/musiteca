@@ -6,7 +6,6 @@ import PasswordHandler
 TABLA_NOMBRE = "usuario"
 TABLA_ATRIBUTOS = ["id", "usuario", "password", "correo", "nombre", "nacimiento"]
 
-
 def valid_login(usuario, password):	
 	conn = DBConnector.conectarDB()
 	hash_pass = PasswordHandler.encode(usuario, password)
