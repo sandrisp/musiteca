@@ -110,3 +110,34 @@ def insert_cancion(cancion):
 			canciones = existe
 			return canciones
 		return None
+	def delete_cancion(cancion):
+	
+		DELETE_ATRIBUTOS = ("cancion_id")
+		if (not all (k in cancion for k in DELETE_ATRIBUTOS)) or (not all (k in DELETE_ATRIBUTOS for k in cancion)):
+			respuesta = {"valido": False, "error":"Para borrar se necesita solo el cancion_id"}
+			return respuesta
+
+		respuesta = valida_cancion(cancion)
+		
+		if not respuesta["valido"]:
+			return respuesta
+
+		cancion_id = cancion["cancion_id"];
+
+		conn = DBConnector.conectarDB()
+		cursor = conn.cursor()
+		sql_lista_has_cancion = """DELETE FROM lista_has_cancion WHERE cancion_id==%s"""
+		sql_cancion = """DELETE FROM cancion WHERE id==%s"""
+
+		salida = {"valido": True, "error": ""}
+
+		try:
+			affected_count_lista_has_cancion = cursor.execute(sql_lista_has_cancion, [int(cancion_id)])
+			affected_count_cancion = cursor.execute(sql_cancion, [int(cancion_id)])
+			conn.commit()
+		except Exception as inst:
+			salida = {"valido": False, "error": inst}
+		finally:
+			cursor.close()
+		
+		return salida

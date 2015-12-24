@@ -86,3 +86,35 @@ def select_lista_by_usuario(usuario_id):
 			listas = existe
 			return listas
 		return None
+
+def delete_lista(lista):
+	
+	DELETE_ATRIBUTOS = ("lista_id")
+	if (not all (k in lista for k in DELETE_ATRIBUTOS)) or (not all (k in DELETE_ATRIBUTOS for k in lista)):
+		respuesta = {"valido": False, "error":"Para borrar se necesita solo el lista_id"}
+		return respuesta
+
+	respuesta = valida_lista(lista)
+	
+	if not respuesta["valido"]:
+		return respuesta
+
+	lista_id = lista["lista_id"];
+
+	conn = DBConnector.conectarDB()
+	cursor = conn.cursor()
+	sql_lista_has_cancion = """DELETE FROM lista_has_cancion WHERE lista_id==%s"""
+	sql_lista = """DELETE FROM lista WHERE id==%s"""
+
+	salida = {"valido": True, "error": ""}
+
+	try:
+		affected_count_lista_has_cancion = cursor.execute(sql_lista_has_cancion, [int(lista_id)])
+		affected_count_lista = cursor.execute(sql_cancion, [int(lista_id)])
+		conn.commit()
+	except Exception as inst:
+		salida = {"valido": False, "error": inst}
+	finally:
+		cursor.close()
+	
+	return salida
