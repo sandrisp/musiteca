@@ -21,59 +21,68 @@ def valid_login(usuario, password):
 	return {"valido":False, "usuario_id":-1}
 
 
-def valid_insert_usuario(usuario):
+def valida_usuario(usuario):
 
 	import re
 
-	usuario = usuario["usuario"]
-	password = usuario["password"]
-	correo = usuario["correo"]
-	nombre = usuario["nombre"]
-	nacimiento = usuario["nacimiento"]
-
 	salida={}
 	error={}
-
-	patron_usuario = "^[a-zA-Z]+([-+.']\w+)*$"
-	patron = re.compile(patron_usuario)
-	if patron.match(usuario)==None:
-		error["usuario"] = (u"Debe iniciar con una letra y le puede seguir letras, números, . o _.")
 	
-	if not password:
-		error["password"] = (u"Debe ingresar una contraseña.")
+	if "usuario_id" in usuario:	
+		usuario = usuario["usuario"]
+		if not usuario_id.isdigit() or int(usuario_id)<=0:
+			error["usuario_id"] = (u"Debe ser un número positivo mayor que 0.")
+		else: select_usuario(usuario_id)==None:
+			error["usuario_id"] = (u"El usuario no existe.")
+
+	if "usuario" in usuario:
+		usuario = usuario["usuario"]
+		patron_usuario = "^[a-zA-Z]+([-+.']\w+)*$"
+		patron = re.compile(patron_usuario)
+		if patron.match(usuario)==None:
+			error["usuario"] = (u"Debe iniciar con una letra y le puede seguir letras, números, . o _.")
+		else:
+			conn = DBConnector.conectarDB()
+			cursor = conn.cursor()
+			sql = "SELECT id FROM usuario WHERE usuario =%s"
+			cursor.execute(sql, [usuario])
+			existe = cursor.fetchall()
+			cursor.close()
+
+			if len(existe) > 0:
+				error["usuario"] = (u"El usuario ya existe.")
 	
-	patron_correo = "^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"
-	patron = re.compile(patron_correo)
-	if patron.match(correo)==None:
-		error["correo"] = (u"No es un correo válido.")
+	if "password" in usuario:
+		password = usuario["password"]
+		if not password:
+			error["password"] = (u"Debe ingresar una contraseña.")
+	
+	if "correo" in usuario:
+		correo = usuario["correo"]
+		patron_correo = "^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"
+		patron = re.compile(patron_correo)
+		if patron.match(correo)==None:
+			error["correo"] = (u"No es un correo válido.")
 
-	patron_nombre = "^[a-zA-Zá-úÁ-Ú]*[a-zA-Zá-úÁ-Ú ]+$"
-	patron = re.compile(patron_nombre)
-	if patron.match(nombre)==None:
-		error["nombre"] = (u"No es un nombre válido. Solo se permiten letras y espacios.")
+	if "nombre" in usuario:
+		nombre = usuario["nombre"]
+		patron_nombre = "^[a-zA-Zá-úÁ-Ú]*[a-zA-Zá-úÁ-Ú ]+$"
+		patron = re.compile(patron_nombre)
+		if patron.match(nombre)==None:
+			error["nombre"] = (u"No es un nombre válido. Solo se permiten letras y espacios.")
 
-	import datetime
-	try:
-		nac = datetime.datetime.strptime(nacimiento, '%d/%m/%Y')
-		today = datetime.datetime.today()
-		if not nac.date()<today.date():
-			error["nacimiento"] = (u"La fecha de nacimiento no puede ser después de hoy.")
-	except ValueError:
-		error["nacimiento"] = (u"Formato incorrecto de fecha dd/mm/aaaa.")
+	if "nacimiento" in usuario:
+		nacimiento = usuario["nacimiento"]
+		import datetime
+		try:
+			nac = datetime.datetime.strptime(nacimiento, '%d/%m/%Y')
+			today = datetime.datetime.today()
+			if not nac.date()<today.date():
+				error["nacimiento"] = (u"La fecha de nacimiento no puede ser después de hoy.")
+		except ValueError:
+			error["nacimiento"] = (u"Formato incorrecto de fecha dd/mm/aaaa.")
 
 	if not len(error):
-
-		conn = DBConnector.conectarDB()
-		cursor = conn.cursor()
-		sql = "SELECT id FROM usuario WHERE usuario =%s"
-		cursor.execute(sql, [usuario])
-		existe = cursor.fetchall()
-		cursor.close()
-
-		if len(existe) > 0:
-			error["usuario"] = (u"El usuario ya existe.")
-			salida = {"valido": False, "error": error}
-
 		salida = {"valido": True, "error": error}
 	else:
 		salida = {"valido": False, "error": error}
@@ -83,7 +92,12 @@ def valid_insert_usuario(usuario):
 
 def insert_usuario(usuario):
 	
-	respuesta = valid_insert_usuario(usuario)
+	INSERT_ATRIBUTOS = ("usuario","password","correo","nombre","nacimiento")
+	if (not all (k in usuario for k in INSERT_ATRIBUTOS)) or (not all (k in INSERT_ATRIBUTOS for k in usuario)):
+		respuesta = {"valido": False, "error":"Para insertar se necesita solo el usuario, password, correo, nombre y nacimiento"}
+		return respuesta
+
+	respuesta = valida_usuario(usuario)
 	
 	if not respuesta["valido"]:
 		return respuesta

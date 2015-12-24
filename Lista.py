@@ -1,27 +1,39 @@
 # -*- coding: utf-8 -*-
 import MySQLdb
 import DBConnector
+import Usuario
 
 TABLA_NOMBRE = "lista"
 TABLA_ATRIBUTOS = ["id", "usuario_id", "nombre"]
 
-def valid_insert_lista(lista):
+
+def valida_lista(lista):
 
 	import re
-
-	usuario_id = lista["usuario_id"]
-	nombre = lista["nombre"]
 
 	salida={}
 	error={}
 	
-	if not usuario_id.isdigit() or int(usuario_id)<=0:
-		error["usuario_id"] = (u"Debe ser un número positivo mayor que 0.")
-	
-	patron_nombre = "^[a-zA-Zá-úÁ-Ú ]+$"
-	patron = re.compile(patron_nombre)
-	if patron.match(nombre)==None:
-		error["nombre"] = (u"No es un nombre válido. Solo se permiten letras y espacios.")
+	if "lista_id" in lista:
+		lista_id = lista["lista_id"]
+		if not lista_id.isdigit() or int(lista_id)<=0:
+			error["lista_id"] = (u"Debe ser un número positivo mayor que 0.")
+		else: select_lista_by_id(lista_id)==None:
+			error["lista_id"] = (u"La lista no existe.")
+
+	if "usuario_id" in cancion:
+		usuario_id = cancion["usuario_id"]
+		respuesta = Usuario.valida_usuario({"usuario_id": usuario_id})
+		if not respuesta["valido"]:
+			error["usuario_id"] = respuesta["error"]
+
+	if "nombre" in lista:
+		nombre = lista["nombre"]
+		patron_nombre = "^[a-zA-Zá-úÁ-Ú ]+$"
+		patron = re.compile(patron_nombre)
+		if patron.match(nombre)==None:
+			error["nombre"] = (u"No es un nombre válido. Solo se permiten letras y espacios.")
+
 
 	if not len(error):
 		salida = {"valido": True, "error": error}
@@ -34,7 +46,12 @@ def valid_insert_lista(lista):
 
 def insert_lista(lista):
 	
-	respuesta = valid_insert_lista(lista)
+	INSERT_ATRIBUTOS = ("usuario_id" ,"nombre")
+	if (not all (k in usuario for k in INSERT_ATRIBUTOS)) or (not all (k in INSERT_ATRIBUTOS for k in usuario)):
+		respuesta = {"valido": False, "error":"Para insertar se necesita solo el usuario_id y nombre"}
+		return respuesta
+
+	respuesta = valida_lista(lista)
 	
 	if not respuesta["valido"]:
 		return respuesta

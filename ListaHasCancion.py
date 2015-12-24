@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import MySQLdb
 import DBConnector
+import Lista
+import Cancion
+
 
 TABLA_NOMBRE = "lista_has_cancion"
 TABLA_ATRIBUTOS = ["lista_id", "cancion_id", "orden"]
@@ -8,7 +11,7 @@ TABLA_ATRIBUTOS = ["lista_id", "cancion_id", "orden"]
 ALLOWED_EXTENSIONS = ["mp3"]
 UPLOAD_FOLDER = 'static/music'
 
-def valid_insert_lista_has_cancion(lista_has_cancion):
+def valida_lista_has_cancion(lista_has_cancion):
 
 	import re
 
@@ -18,11 +21,22 @@ def valid_insert_lista_has_cancion(lista_has_cancion):
 	salida={}
 	error={}
 	
-	if not lista_id.isdigit() or int(lista_id)<=0:
-		error["lista_id"] = (u"Debe ser un número positivo mayor que 0.")
-	
-	if not cancion_id.isdigit() or int(cancion_id)<=0:
-		error["cancion_id"] = (u"Debe ser un número positivo mayor que 0.")
+	if "lista_id" in lista_has_cancion:
+		lista_id = lista_has_cancion["lista_id"]
+		respuesta = Lista.valida_lista({"lista_id": lista_id})
+		if not respuesta["valido"]:
+			error["lista_id"] = respuesta["error"]
+
+	if "cancion_id" in lista_has_cancion:
+		cancion_id = lista_has_cancion["cancion_id"]
+		respuesta = Cancion.valida_cancion({"cancion_id": cancion_id})
+		if not respuesta["valido"]:
+			error["cancion_id"] = respuesta["error"]
+
+	if "orden" in lista_has_cancion:
+		orden = lista_has_cancion["orden"]
+		if not orden.isdigit() or int(orden)<0:
+			error["orden"] = (u"Debe ser un número positivo mayor o igual que 0.")
 
 	if not len(error):
 		salida = {"valido": True, "error": error}
@@ -35,7 +49,12 @@ def valid_insert_lista_has_cancion(lista_has_cancion):
 
 def insert_lista_has_cancion(lista_has_cancion):
 	
-	respuesta = valid_insert_lista_has_cancion(lista_has_cancion)
+	INSERT_ATRIBUTOS = ("lista_id", "cancion_id")
+	if (not all (k in lista_has_cancion for k in INSERT_ATRIBUTOS)) or (not all (k in INSERT_ATRIBUTOS for k in lista_has_cancion)):
+		respuesta = {"valido": False, "error":"Para insertar se necesita solo el lista_id y cancion_id"}
+		return respuesta
+
+	respuesta = valida_lista_has_cancion(lista_has_cancion)
 	
 	if not respuesta["valido"]:
 		return respuesta
