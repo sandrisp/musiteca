@@ -61,3 +61,28 @@ def insert_lista(lista):
 	
 	return salida
 
+def select_lista_by_id(lista_id):
+		conn = DBConnector.conectarDB()
+		cursor = conn.cursor(MySQLdb.cursors.DictCursor)
+		sql = "SELECT id, usuario_id, nombre FROM lista where id=%s"
+		cursor.execute(sql, [int(lista_id)])
+		existe = cursor.fetchall()
+		cursor.close()
+
+		if len(existe) > 0:
+			lista = existe[0]
+			return lista
+		return None
+
+def select_lista_by_usuario(usuario_id):
+		conn = DBConnector.conectarDB()
+		cursor = conn.cursor(MySQLdb.cursors.DictCursor)
+		sql = "SELECT id, usuario_id, nombre FROM lista where usuario_id=%s"
+		cursor.execute(sql, [int(usuario_id)])
+		existe = cursor.fetchall()
+		cursor.close()
+
+		if len(existe) > 0:
+			listas = existe
+			return listas
+		return None

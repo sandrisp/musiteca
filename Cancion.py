@@ -84,3 +84,29 @@ def insert_cancion(cancion):
 		cursor.close()
 	
 	return salida
+
+	def select_cancion_by_id(cancion_id):
+		conn = DBConnector.conectarDB()
+		cursor = conn.cursor(MySQLdb.cursors.DictCursor)
+		sql = "SELECT id, usuario_id, titulo, artista, formato, fecha_subida FROM cancion where id=%s"
+		cursor.execute(sql, [int(cancion_id)])
+		existe = cursor.fetchall()
+		cursor.close()
+
+		if len(existe) > 0:
+			cancion = existe[0]
+			return cancion
+		return None
+
+	def select_cancion_by_usuario(usuario_id):
+		conn = DBConnector.conectarDB()
+		cursor = conn.cursor(MySQLdb.cursors.DictCursor)
+		sql = "SELECT id, usuario_id, titulo, artista, formato, fecha_subida FROM cancion where usuario_id=%s"
+		cursor.execute(sql, [int(usuario_id)])
+		existe = cursor.fetchall()
+		cursor.close()
+
+		if len(existe) > 0:
+			canciones = existe
+			return canciones
+		return None
