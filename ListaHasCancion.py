@@ -81,6 +81,42 @@ def insert_lista_has_cancion(lista_has_cancion):
 	
 	return salida
 
+def update_lista_has_cancion(lista_has_cancion):
+	
+	UPDATE_ATRIBUTOS = ("lista_id","cancion_id","orden")
+	if (not all (k in lista_has_cancion for k in UPDATE_ATRIBUTOS)) or (not all (k in UPDATE_ATRIBUTOS for k in lista_has_cancion)):
+		respuesta = {"valido": False, "error":"Para actualizar se necesita solo el lista_id, cancion_id y orden"}
+		return respuesta
+
+	respuesta = valida_lista_has_cancion(lista_has_cancion)
+	
+	if not respuesta["valido"]:
+		return respuesta
+
+	lista_id = lista_has_cancion["lista_id"];
+	cancion_id = lista_has_cancion["cancion_id"];
+	orden = lista_has_cancion["orden"];
+
+	conn = DBConnector.conectarDB()
+	cursor = conn.cursor()
+	sql = """UPDATE lista_has_cancion SET 
+				orden=%s
+				WHERE lista_id=%s AND cancion_id=%s"""
+
+	salida = {"valido": True, "error": ""}
+
+	try:
+		affected_count = cursor.execute(sql, [orden, int(lista_id), int(cancion_id)])
+		conn.commit()
+	except Exception as inst:
+		salida = {"valido": False, "error": inst}
+	finally:
+		cursor.close()
+	
+	return salida
+
+
+
 def delete_lista_has_cancion(lista_has_cancion):
 	
 	DELETE_ATRIBUTOS = ("lista_id", "cancion_id")

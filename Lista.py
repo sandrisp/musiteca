@@ -104,6 +104,40 @@ def select_lista_by_usuario(usuario_id):
 			return listas
 		return None
 
+
+def update_lista(lista):
+	
+	UPDATE_ATRIBUTOS = ("lista_id","nombre")
+	if (not all (k in lista for k in UPDATE_ATRIBUTOS)) or (not all (k in UPDATE_ATRIBUTOS for k in lista)):
+		respuesta = {"valido": False, "error":"Para actualizar se necesita solo el lista_id y nombre"}
+		return respuesta
+
+	respuesta = valida_lista(lista)
+	
+	if not respuesta["valido"]:
+		return respuesta
+
+	lista_id = lista["lista_id"];
+	nombre = lista["nombre"];
+
+	conn = DBConnector.conectarDB()
+	cursor = conn.cursor()
+	sql = """UPDATE lista SET 
+				nombre=%s
+				WHERE id=%s"""
+
+	salida = {"valido": True, "error": ""}
+
+	try:
+		affected_count = cursor.execute(sql, [nombre, int(lista_id)])
+		conn.commit()
+	except Exception as inst:
+		salida = {"valido": False, "error": inst}
+	finally:
+		cursor.close()
+	
+	return salida
+
 def delete_lista(lista):
 	
 	DELETE_ATRIBUTOS = ("lista_id")

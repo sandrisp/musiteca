@@ -127,6 +127,42 @@ def select_cancion_by_usuario(usuario_id):
 		canciones = existe
 		return canciones
 	return None
+
+def update_cancion(cancion):
+	
+	UPDATE_ATRIBUTOS = ("cancion_id","titulo","artista")
+	if (not all (k in cancion for k in UPDATE_ATRIBUTOS)) or (not all (k in UPDATE_ATRIBUTOS for k in cancion)):
+		respuesta = {"valido": False, "error":"Para actualizar se necesita solo el cancion_id, titulo y artista"}
+		return respuesta
+
+	respuesta = valida_cancion(cancion)
+	
+	if not respuesta["valido"]:
+		return respuesta
+
+	cancion_id = cancion["cancion_id"];
+	titulo = cancion["titulo"];
+	artista = cancion["artista"];
+
+	conn = DBConnector.conectarDB()
+	cursor = conn.cursor()
+	sql = """UPDATE cancion SET 
+				titulo=%s, artista=%s
+				WHERE id=%s"""
+
+	salida = {"valido": True, "error": ""}
+
+	try:
+		affected_count = cursor.execute(sql, [titulo, artista, int(cancion_id)])
+		conn.commit()
+	except Exception as inst:
+		salida = {"valido": False, "error": inst}
+	finally:
+		cursor.close()
+	
+	return salida
+
+	
 def delete_cancion(cancion):
 
 	DELETE_ATRIBUTOS = ("cancion_id")

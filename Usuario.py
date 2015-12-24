@@ -141,7 +141,17 @@ def select_usuario(usuario_id):
 
 def update_usuario(usuario):
 	
-	usuario_id = usuario["id"]
+	UPDATE_ATRIBUTOS = ("usuario_id","correo","nombre","nacimiento")
+	if (not all (k in usuario for k in UPDATE_ATRIBUTOS)) or (not all (k in UPDATE_ATRIBUTOS for k in usuario)):
+		respuesta = {"valido": False, "error":"Para actualizar se necesita solo el usuario_id, correo, nombre y nacimiento"}
+		return respuesta
+
+	respuesta = valida_usuario(usuario)
+	
+	if not respuesta["valido"]:
+		return respuesta
+
+	usuario_id = usuario["usuario_id"]
 	correo = usuario["correo"]
 	nombre = usuario["nombre"]
 	nacimiento = usuario["nacimiento"]
