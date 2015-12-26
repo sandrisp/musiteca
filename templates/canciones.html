@@ -38,8 +38,8 @@
 
 			{% if canciones!=None -%}
 				{% for cancion in canciones %}
-				<tr id="cancion_{{ cancion.id }}" data-value="{{ url_for('static', filename='music/'~usuario_sesion ~'/'~ cancion.id ~'.'~ cancion.formato ) }}" 
-					titulo="{{ cancion.titulo }}" artista="{{ cancion.artista }}">
+				<tr id="cancion_{{ cancion.id }}" data-value="{{ url_for('static', filename='music/'~usuario_sesion ~'/'~ cancion.id ~'.'~ cancion.formato ) }}" titulo="{{ cancion.titulo }}" artista="{{ cancion.artista }}">
+
 					<td name="id">{{ cancion.id }}</td>
 					<td name="titulo">{{ cancion.titulo }}</td>
 					<td name="artista">{{ cancion.artista }}</td>

@@ -114,10 +114,6 @@ def acciones_cancion():
 	if request.method == 'POST':
 		if not all (k in Cancion.INSERT_ATRIBUTOS for k in request.form):
 			return jsonify({"valido":False, "error":"No todos los atributos para el método."})
-
-
-		#return jsonify({"metodoa":request.method})
-		
 	
 		cancion["usuario_id"] = usuario_sesion
 		cancion["titulo"] = request.form["titulo"]

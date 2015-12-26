@@ -33,8 +33,8 @@ def valida_usuario(user):
 		try:
 			if int(usuario_id)<=0:
 				error["usuario_id"] = (u"Debe ser un número positivo mayor que 0.")
-			#elif select_usuario(usuario_id)==None:
-				#error["usuario_id"] = (u"El usuario no existe.")
+			elif select_usuario(usuario_id)==None:
+				error["usuario_id"] = (u"El usuario no existe.")
 		except Exception as inst:
 			error["usuario_id"] = (u"Debe ser un número positivo mayor que 0.")
 	if "usuario" in user:

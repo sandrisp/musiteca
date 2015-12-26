@@ -71,19 +71,36 @@ $(document).ready( function () {
 
 } );
 
+window.onbeforeunload = unloadPage;
+function unloadPage() {
+	noneAudio();
+}
+
+function uploadAudio(selected){
+	audio = $('#mp3Source');
+	var timestamp = new Date().getTime();
+	audio.attr( "src", selected.attr('data-value')+ "?i=" +timestamp);
+	audio.trigger('load');
+}
+
+function noneAudio(){
+	audio = $('#mp3Source');
+	audio.trigger("pause");
+	audio.removeAttr( "src");
+	audio.trigger('load');
+}
+
 function deselect_row(row){
 
 	selected = $("#table_cancion .selected");
-	audio = $('#audio');
 
-	source = $('#mp3Source');
-	source.removeAttr( "src");
-
+	noneAudio();
+	
 	row.removeClass('selected');
 	$('#btn_editar').attr('disabled', true);
 	$('#btn_borrar').attr('disabled', true);
 
-
+	
 }
 function select_row(row){
 	$('tr.selected').removeClass('selected');
@@ -92,12 +109,8 @@ function select_row(row){
 	$('#btn_borrar').attr('disabled', false);
 
 	selected = $("#table_cancion .selected");
-	audio = $('#audio');
 
-	source = $('#mp3Source');
-	source.attr( "src", selected.attr('data-value') );
-
-	audio.trigger('load');
+	uploadAudio(selected);
 }
 
 
@@ -119,28 +132,29 @@ function acciones_cancion(accion, url){
 				$('#modal'+method).modal('hide');
 				cancion = respuesta["cancion"];
 				if(method=="POST"){
-					select_row($("#cancion_"+ cancion["id"]));
 					$("#table_cancion tbody").append(
 							"<tr id='cancion_"+ cancion["id"] +
 								"' data-value='/static/music/"+ cancion["usuario_id"] +'/'+ cancion["id"] + '.'+ cancion["formato"]+"'"+
-								"titulo='"+cancion["titulo"]+"' artista='" + cancion["artista"]+"'"+
+								"titulo='"+cancion["titulo"]+"' artista='" + cancion["artista"]+"' >"+
 								"<td name='id'>"+ cancion["id"] + "</td>" +
 								"<td name='titulo'>"+ cancion["titulo"] + "</td>" +
 								"<td name='artista'>"+ cancion["artista"] + "</td>" +
 								"<td name='formato'>"+ cancion["formato"] + "</td>" +
 								"<td name='fecha_subida'>"+ cancion["fecha_subida"] + "</td>" +
 							"</tr>");
+					select_row($("#cancion_"+ cancion["id"]));
 				}else if(method=="PUT"){
 					$("#cancion_"+ cancion["id"]).remove();
 					$("#table_cancion tbody").append(
 							"<tr id='cancion_"+ cancion["id"] +"' data-value='/static/music/"+ cancion["usuario_id"] +'/'+ cancion["id"] + '.'+ cancion["formato"]+"'"+
-								"titulo='"+cancion["titulo"]+"' artista='" + cancion["artista"]+"'"+
+								"titulo='"+cancion["titulo"]+"' artista='" + cancion["artista"]+"' >"+
 								"<td name='id'>"+ cancion["id"] + "</td>" +
 								"<td name='titulo'>"+ cancion["titulo"] + "</td>" +
 								"<td name='artista'>"+ cancion["artista"] + "</td>" +
 								"<td name='formato'>"+ cancion["formato"] + "</td>" +
 								"<td name='fecha_subida'>"+ cancion["fecha_subida"] + "</td>" +
 							"</tr>");
+					select_row($("#cancion_"+ cancion["id"]));
 				}else if(method=="DELETE"){
 					deselect_row($("#cancion_"+ cancion["id"]));
 					$("#cancion_"+ cancion["id"]).remove();
@@ -165,6 +179,8 @@ function acciones_cancion(accion, url){
 		processData=true;
 		contentType='application/x-www-form-urlencoded; charset=UTF-8';
 	}
+
+	noneAudio();
 
 	$.ajax({type: method,
 			url: url, 
