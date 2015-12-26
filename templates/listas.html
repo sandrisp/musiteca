@@ -16,7 +16,7 @@
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='js/canciones.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/listas.js') }}"></script>
 
 	<title>Ingresar</title>
 
@@ -24,32 +24,23 @@
 
 <body>
 <div class="container">
-	<table id="table_cancion" class="display">
+	<table id="table_lista" class="display">
 		<thead>
 			<tr>
 				<th>id</th>
-				<th>Título</th>
-				<th>Artista</th>
-				<th>Formato</th>
-				<th>Fecha Subida</th>
+				<th>Nombre</th>
 			</tr>
 		</thead>
 		<tbody>
 
-			{% if canciones!=None -%}
-				{% for cancion in canciones %}
-				<tr id="cancion_{{ cancion.id }}" data-value="{{ url_for('static', filename='music/'~usuario_sesion ~'/'~ cancion.id ~'.'~ cancion.formato ) }}" titulo="{{ cancion.titulo }}" artista="{{ cancion.artista }}">
-
-					<td name="id">{{ cancion.id }}</td>
-					<td name="titulo">{{ cancion.titulo }}</td>
-					<td name="artista">{{ cancion.artista }}</td>
-					<td name="formato">{{ cancion.formato }}</td>
-					<td name="fecha_subida">{{ cancion.fecha_subida }}</td>
+			{% if listas!=None -%}
+				{% for lista in listas %}
+				<tr id="lista_{{ lista.id }}" listaId="{{ lista.id }}" nombre="{{ lista.nombre }}">
+					<td name="id">{{ lista.id }}</td>
+					<td name="nombre">{{ lista.nombre }}</td>
 				</tr>
 
 				{% endfor %}
-			{%- else %}
-				<p>No hay canciones</p>
 			{%- endif %}
 		</tbody>
 	</table>
@@ -58,64 +49,47 @@
 	<button id="btn_editar" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#modalPUT" disabled="true">Editar</button>
 	<button id="btn_borrar" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#modalDELETE" disabled="true">Borrar</button>
 
-	{{ audio.audio_player("audio", "mp3Source") }}
 
 </div>
 
 
 <!-- Modal -->
 
-{% set inputs = [["titulo",
+{% set inputs = [["nombre",
 					"text",
 					"",
-					"Título",
-					"glyphicon-user"
-					],
-				["artista",
-					"text",
-					"",
-					"Artista",
+					"Nombre",
 					"glyphicon-user"
 					]] -%}
-{% set file=["archivo",
-				'audio/mp3',
-				"glyphicon-user"
-				] -%}
 
-{{ modal.modal(onsubmit="acciones_cancion", titulo="Ingresar Canción", boton_text="Ingresar", method="POST", url=url_for('acciones_cancion'), inputs=inputs, file=file) }}
+{{ modal.modal(onsubmit="acciones_lista", titulo="Ingresar Lista", boton_text="Ingresar", method="POST", url=url_for('acciones_lista'), inputs=inputs) }}
 
 {% set inputs = [
-				["cancion_id",
+				["lista_id",
 					"hidden",
 					"",
 					"",
 					None
 					],
-				["titulo",
+				["nombre",
 					"text",
 					"",
-					"Título",
-					"glyphicon-user"
-					],
-				["artista",
-					"text",
-					"",
-					"Artista",
+					"Nombre",
 					"glyphicon-user"
 					]] -%}
 
-{{ modal.modal(onsubmit="acciones_cancion", titulo="Editar Canción", boton_text="Editar", method="PUT", url=url_for('acciones_cancion'), inputs=inputs) }}
+{{ modal.modal(onsubmit="acciones_lista", titulo="Editar Lista", boton_text="Editar", method="PUT", url=url_for('acciones_lista'), inputs=inputs) }}
 
 {% set inputs = [
-				["cancion_id",
+				["lista_id",
 					"hidden",
 					"",
 					"",
 					None
 					]] -%}
 
-{{ modal.modal(onsubmit="acciones_cancion", titulo="Eliminar Canción", boton_text="Eliminar", method="DELETE", 
-	url=url_for('acciones_cancion'), inputs=inputs, mensaje="¿Seguro que desea eliminar la canción?") }}
+{{ modal.modal(onsubmit="acciones_lista", titulo="Eliminar Lista", boton_text="Eliminar", method="DELETE", 
+	url=url_for('acciones_lista'), inputs=inputs, mensaje="¿Seguro que desea eliminar la lista?") }}
 
 
 </body>

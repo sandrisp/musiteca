@@ -10,6 +10,7 @@ from flask import (
 	jsonify)
 import Usuario
 import Cancion
+import Lista
 from StreamConsumingMiddleware import StreamConsumingMiddleware
 
 app = Flask(__name__)
@@ -148,7 +149,51 @@ def acciones_cancion():
 
 	return jsonify({"valido":False, "error":"Método no disponible para el recurso canción."})
 
+@app.route('/lista', methods=['GET', 'POST','PUT','DELETE'])
+def acciones_lista():
+	usuario_sesion = check_sesion()
+	if not usuario_sesion:
+		return redirect(url_for('login'))
 
+	error=None
+	lista = {}
+
+	if request.method == 'GET':
+		listas = Lista.select_lista_by_usuario(usuario_sesion)
+		return render_template("listas.html", listas=listas, usuario_sesion=usuario_sesion)
+
+	if request.method == 'POST':
+		if not all (k in Lista.INSERT_ATRIBUTOS for k in request.form):
+			return jsonify({"valido":False, "error":"No todos los atributos para el método."})
+	
+		lista["usuario_id"] = usuario_sesion
+		lista["nombre"] = request.form["nombre"]
+
+
+		respuesta = Lista.insert_lista(lista)
+		return jsonify(respuesta)
+
+	if request.method == 'PUT':
+		if not all (k in Lista.UPDATE_ATRIBUTOS for k in request.form):
+			return jsonify({"valido":False, "error":"No todos los atributos para el método."})
+		
+
+		lista["lista_id"] = request.form["lista_id"]
+		lista["nombre"] = request.form["nombre"]
+
+		respuesta = Lista.update_lista(lista)
+		return jsonify(respuesta)
+
+	if request.method == 'DELETE':
+		if (not "lista_id" in request.form):
+			return jsonify({"valido":False, "error":"No todos los atributos para el método."})
+		
+		lista["lista_id"] = request.form["lista_id"]
+
+		respuesta = Lista.delete_lista(lista)
+		return jsonify(respuesta)
+
+	return jsonify({"valido":False, "error":"Método no disponible para el recurso lista."})
 
 if __name__ == "__main__":
 	app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'

@@ -22,7 +22,7 @@
 	</div>
 {%- endmacro %}
 
-{% macro modal(titulo="",boton_text="", method='POST', url='', inputs=[], file=None, mensaje=None) -%}
+{% macro modal(onsubmit="", titulo="",boton_text="", method='POST', url='', inputs=[], file=None, mensaje=None) -%}
 <div class="modal fade" id="modal{{method}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel{{method}}">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -31,7 +31,7 @@
 				<h4 class="modal-title" id="myModalLabel{{method}}">{{titulo}}</h4>
 			</div>
 			<div class="modal-body">
-				<form method="{{ method }}" onsubmit="return acciones_cancion('{{ method }}','{{ url }}')" name="form{{ method }}" class="form-modal"  
+				<form method="{{ method }}" onsubmit="return {{ onsubmit }}('{{ method }}', '{{ url }}')" name="form{{ method }}" class="form-modal"  
 				{% if file!=None -%}
 					enctype="multipart/form-data"
 				{%- endif %}
