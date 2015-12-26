@@ -21,22 +21,24 @@ def valid_login(usuario, password):
 	return {"valido":False, "usuario_id":-1}
 
 
-def valida_usuario(usuario):
+def valida_usuario(user):
 
 	import re
 
 	salida={}
 	error={}
 	
-	if "usuario_id" in usuario:	
-		usuario = usuario["usuario"]
-		if not usuario_id.isdigit() or int(usuario_id)<=0:
+	if "usuario_id" in user:	
+		usuario_id = user["usuario_id"]
+		try:
+			if int(usuario_id)<=0:
+				error["usuario_id"] = (u"Debe ser un número positivo mayor que 0.")
+			#elif select_usuario(usuario_id)==None:
+				#error["usuario_id"] = (u"El usuario no existe.")
+		except Exception as inst:
 			error["usuario_id"] = (u"Debe ser un número positivo mayor que 0.")
-		else: select_usuario(usuario_id)==None:
-			error["usuario_id"] = (u"El usuario no existe.")
-
-	if "usuario" in usuario:
-		usuario = usuario["usuario"]
+	if "usuario" in user:
+		usuario = user["usuario"]
 		patron_usuario = "^[a-zA-Z]+([-+.']\w+)*$"
 		patron = re.compile(patron_usuario)
 		if patron.match(usuario)==None:
@@ -52,27 +54,27 @@ def valida_usuario(usuario):
 			if len(existe) > 0:
 				error["usuario"] = (u"El usuario ya existe.")
 	
-	if "password" in usuario:
-		password = usuario["password"]
+	if "password" in user:
+		password = user["password"]
 		if not password:
 			error["password"] = (u"Debe ingresar una contraseña.")
 	
-	if "correo" in usuario:
-		correo = usuario["correo"]
+	if "correo" in user:
+		correo = user["correo"]
 		patron_correo = "^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$"
 		patron = re.compile(patron_correo)
 		if patron.match(correo)==None:
 			error["correo"] = (u"No es un correo válido.")
 
-	if "nombre" in usuario:
-		nombre = usuario["nombre"]
+	if "nombre" in user:
+		nombre = user["nombre"]
 		patron_nombre = "^[a-zA-Zá-úÁ-Ú]*[a-zA-Zá-úÁ-Ú ]+$"
 		patron = re.compile(patron_nombre)
 		if patron.match(nombre)==None:
 			error["nombre"] = (u"No es un nombre válido. Solo se permiten letras y espacios.")
 
-	if "nacimiento" in usuario:
-		nacimiento = usuario["nacimiento"]
+	if "nacimiento" in user:
+		nacimiento = user["nacimiento"]
 		import datetime
 		try:
 			nac = datetime.datetime.strptime(nacimiento, '%d/%m/%Y')
@@ -90,23 +92,23 @@ def valida_usuario(usuario):
 	return salida
 
 
-def insert_usuario(usuario):
+def insert_usuario(user):
 	
 	INSERT_ATRIBUTOS = ("usuario","password","correo","nombre","nacimiento")
-	if (not all (k in usuario for k in INSERT_ATRIBUTOS)) or (not all (k in INSERT_ATRIBUTOS for k in usuario)):
+	if (not all (k in user for k in INSERT_ATRIBUTOS)) or (not all (k in INSERT_ATRIBUTOS for k in user)):
 		respuesta = {"valido": False, "error":"Para insertar se necesita solo el usuario, password, correo, nombre y nacimiento"}
 		return respuesta
 
-	respuesta = valida_usuario(usuario)
+	respuesta = valida_usuario(user)
 	
 	if not respuesta["valido"]:
 		return respuesta
 
-	usuario = usuario["usuario"]
-	password = usuario["password"]
-	correo = usuario["correo"]
-	nombre = usuario["nombre"]
-	nacimiento = usuario["nacimiento"]
+	usuario = user["usuario"]
+	password = user["password"]
+	correo = user["correo"]
+	nombre = user["nombre"]
+	nacimiento = user["nacimiento"]
 	conn = DBConnector.conectarDB()
 	hash_pass = PasswordHandler.encode(usuario, password)
 	cursor = conn.cursor()

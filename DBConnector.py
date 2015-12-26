@@ -8,6 +8,8 @@ DB_USER= "root"
 DB_PASS=""
 DB_DATABASE = "musiteca"
 
+
+
 def conectarDB():
 
 	conn = MySQLdb.connect(host=DB_HOST,

@@ -2,12 +2,17 @@
 import MySQLdb
 import DBConnector
 import Usuario
+import os
 
 TABLA_NOMBRE = "cancion"
 TABLA_ATRIBUTOS = ["id", "usuario_id", "titulo", "artista", "formato", "fecha_subida"]
 
 ALLOWED_EXTENSIONS = ["mp3"]
 UPLOAD_FOLDER = 'static/music'
+
+INSERT_ATRIBUTOS = ("usuario_id" ,"titulo" ,"artista" ,"archivos")
+UPDATE_ATRIBUTOS = ("cancion_id","titulo","artista")
+DELETE_ATRIBUTOS = ("cancion_id")
 
 def valida_cancion(cancion):
 
@@ -20,8 +25,8 @@ def valida_cancion(cancion):
 		cancion_id = cancion["cancion_id"]
 		if not cancion_id.isdigit() or int(cancion_id)<=0:
 			error["cancion_id"] = (u"Debe ser un número positivo mayor que 0.")
-		else: select_cancion_by_id(cancion_id)==None:
-			error["cancion_id"] = (u"La canción no existe.")
+		#elif select_cancion_by_id(cancion_id)==None:
+			#error["cancion_id"] = (u"La canción no existe.")
 
 	if "usuario_id" in cancion:
 		usuario_id = cancion["usuario_id"]
@@ -31,14 +36,14 @@ def valida_cancion(cancion):
 	
 	if "titulo" in cancion:
 		titulo = cancion["titulo"]
-		patron_titulo = "^[a-zA-Zá-úÁ-Ú ]+$"
+		patron_titulo = "^[a-zA-Zá-úÁ-Ú0-9 .]+$"
 		patron = re.compile(patron_titulo)
 		if patron.match(titulo)==None:
 			error["titulo"] = (u"Solo se permiten letras y espacios.")
 
 	if "artista" in cancion:
 		artista = cancion["artista"]
-		patron_artista = "^[a-zA-Zá-úÁ-Ú ]*$"
+		patron_artista = "^[a-zA-Zá-úÁ-Ú0-9 .]*$"
 		patron = re.compile(patron_artista)
 		if patron.match(artista)==None:
 			error["artista"] = (u"Solo se permiten letras y espacios.")
@@ -52,7 +57,7 @@ def valida_cancion(cancion):
 			file_extension_array = archivo.filename.split(".")
 			formato = file_extension_array[-1]
 			if not formato in ALLOWED_EXTENSIONS:
-				error["archivo"] = (u"El formato debe ser "+ALLOWED_EXTENSIONS)
+				error["archivo"] = (u"El formato debe ser "+ ', '.join(ALLOWED_EXTENSIONS))
 
 	if not len(error):
 		salida = {"valido": True, "error": error}
@@ -63,10 +68,10 @@ def valida_cancion(cancion):
 
 def insert_cancion(cancion):
 	
-	INSERT_ATRIBUTOS = ("usuario_id" ,"titulo" ,"artista" ,"archivos")
-	if (not all (k in usuario for k in INSERT_ATRIBUTOS)) or (not all (k in INSERT_ATRIBUTOS for k in usuario)):
+	if (not all (k in cancion for k in INSERT_ATRIBUTOS)) or (not all (k in INSERT_ATRIBUTOS for k in cancion)):
 		respuesta = {"valido": False, "error":"Para insertar se necesita solo el usuario_id, titulo, artista y archivos"}
 		return respuesta
+
 
 	respuesta = valida_cancion(cancion)
 	
@@ -85,7 +90,7 @@ def insert_cancion(cancion):
 	conn = DBConnector.conectarDB()
 	cursor = conn.cursor()
 
-	salida = {"valido": True, "error": ""}
+	
 
 	sql = """INSERT INTO cancion 
 				(usuario_id, titulo, artista, formato)
@@ -93,22 +98,27 @@ def insert_cancion(cancion):
 	try:
 		affected_count = cursor.execute(sql, [int(usuario_id), titulo, artista, formato])
 		conn.commit()
-		image.save(UPLOAD_FOLDER+"/"+usuario_id+"/"+str(cursor.lastrowid)+"."+formato)
-
+		directory = UPLOAD_FOLDER+"/"+str(usuario_id)
+		if not os.path.exists(directory):
+			os.makedirs(directory)
+		archivo.save(directory+"/"+str(cursor.lastrowid)+"."+formato)
+		salida = {"valido": True, "cancion": select_cancion_by_id(str(cursor.lastrowid))}
 	except Exception as inst:
 		salida = {"valido": False, "error": inst}
 	finally:
 		cursor.close()
+		conn.close()
 	
 	return salida
 
 def select_cancion_by_id(cancion_id):
 	conn = DBConnector.conectarDB()
 	cursor = conn.cursor(MySQLdb.cursors.DictCursor)
-	sql = "SELECT id, usuario_id, titulo, artista, formato, fecha_subida FROM cancion where id=%s"
-	cursor.execute(sql, [int(cancion_id)])
+	sql = "SELECT id, usuario_id, titulo, artista, formato, DATE_FORMAT(fecha_subida, %s) fecha_subida FROM cancion where id=%s"
+	cursor.execute(sql, ['%Y/%m/%d %H:%i:%S', int(cancion_id)])
 	existe = cursor.fetchall()
 	cursor.close()
+	conn.close()
 
 	if len(existe) > 0:
 		cancion = existe[0]
@@ -118,10 +128,11 @@ def select_cancion_by_id(cancion_id):
 def select_cancion_by_usuario(usuario_id):
 	conn = DBConnector.conectarDB()
 	cursor = conn.cursor(MySQLdb.cursors.DictCursor)
-	sql = "SELECT id, usuario_id, titulo, artista, formato, fecha_subida FROM cancion where usuario_id=%s"
-	cursor.execute(sql, [int(usuario_id)])
+	sql = "SELECT id, usuario_id, titulo, artista, formato, DATE_FORMAT(fecha_subida, %s) fecha_subida FROM cancion where usuario_id=%s"
+	cursor.execute(sql, ['%Y/%m/%d %H:%i:%S', int(usuario_id)])
 	existe = cursor.fetchall()
 	cursor.close()
+	conn.close()
 
 	if len(existe) > 0:
 		canciones = existe
@@ -130,7 +141,6 @@ def select_cancion_by_usuario(usuario_id):
 
 def update_cancion(cancion):
 	
-	UPDATE_ATRIBUTOS = ("cancion_id","titulo","artista")
 	if (not all (k in cancion for k in UPDATE_ATRIBUTOS)) or (not all (k in UPDATE_ATRIBUTOS for k in cancion)):
 		respuesta = {"valido": False, "error":"Para actualizar se necesita solo el cancion_id, titulo y artista"}
 		return respuesta
@@ -150,25 +160,27 @@ def update_cancion(cancion):
 				titulo=%s, artista=%s
 				WHERE id=%s"""
 
-	salida = {"valido": True, "error": ""}
+	salida = {"valido": False, "error": ""}
 
 	try:
 		affected_count = cursor.execute(sql, [titulo, artista, int(cancion_id)])
 		conn.commit()
+		salida = {"valido": True, "cancion": select_cancion_by_id(cancion_id)}
 	except Exception as inst:
 		salida = {"valido": False, "error": inst}
 	finally:
 		cursor.close()
+		conn.close()
 	
 	return salida
 
 	
 def delete_cancion(cancion):
 
-	DELETE_ATRIBUTOS = ("cancion_id")
-	if (not all (k in cancion for k in DELETE_ATRIBUTOS)) or (not all (k in DELETE_ATRIBUTOS for k in cancion)):
+	if (not "cancion_id" in cancion):
 		respuesta = {"valido": False, "error":"Para borrar se necesita solo el cancion_id"}
 		return respuesta
+
 
 	respuesta = valida_cancion(cancion)
 	
@@ -177,20 +189,48 @@ def delete_cancion(cancion):
 
 	cancion_id = cancion["cancion_id"];
 
+
+	
+	cancion = select_cancion_by_id(cancion_id)
+	usuario_id = cancion["usuario_id"]
+	formato = cancion["formato"]
+
+
+
 	conn = DBConnector.conectarDB()
 	cursor = conn.cursor()
-	sql_lista_has_cancion = """DELETE FROM lista_has_cancion WHERE cancion_id==%s"""
-	sql_cancion = """DELETE FROM cancion WHERE id==%s"""
+	sql_lista_has_cancion = """DELETE FROM lista_has_cancion WHERE cancion_id=%s"""
+	
 
 	salida = {"valido": True, "error": ""}
 
 	try:
 		affected_count_lista_has_cancion = cursor.execute(sql_lista_has_cancion, [int(cancion_id)])
-		affected_count_cancion = cursor.execute(sql_cancion, [int(cancion_id)])
+
 		conn.commit()
 	except Exception as inst:
 		salida = {"valido": False, "error": inst}
+		
 	finally:
 		cursor.close()
+		conn.close()
+	if(salida["valido"]==False):
+		return salida
+	conn = DBConnector.conectarDB()
+	cursor = conn.cursor()
+	sql_cancion = """DELETE FROM cancion WHERE id=%s"""
+	try:
+		affected_count_cancion = cursor.execute(sql_cancion, [int(cancion_id)])
+
+		conn.commit()
+
+		salida = {"valido": True, "cancion": {"id":cancion_id}}
+	except Exception as inst2:
+		salida = {"valido": False, "error": inst2}
+		return salida
+	finally:
+		cursor.close()
+		conn.close()
+	os.remove(UPLOAD_FOLDER+"/"+str(usuario_id)+"/"+ cancion_id+"."+formato)
 	
 	return salida

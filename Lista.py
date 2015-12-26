@@ -18,7 +18,7 @@ def valida_lista(lista):
 		lista_id = lista["lista_id"]
 		if not lista_id.isdigit() or int(lista_id)<=0:
 			error["lista_id"] = (u"Debe ser un número positivo mayor que 0.")
-		else: select_lista_by_id(lista_id)==None:
+		elif select_lista_by_id(lista_id)==None:
 			error["lista_id"] = (u"La lista no existe.")
 
 	if "usuario_id" in cancion:

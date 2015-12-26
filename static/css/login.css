@@ -1,3 +1,4 @@
+
 body {
   padding-top: 40px;
   padding-bottom: 40px;
@@ -9,6 +10,7 @@ body {
   padding: 15px;
   margin: 0 auto;
 }
+
 .form-signin .form-signin-heading,
 .form-signin .checkbox {
   margin-bottom: 10px;
@@ -36,4 +38,8 @@ body {
 .form-signin input[type="password"] {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+
+.form-signin .input-group{
+  margin-bottom: 25px;
 }
