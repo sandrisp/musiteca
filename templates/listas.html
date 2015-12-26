@@ -1,98 +1,84 @@
 {% import 'modal_macro.html' as modal %}
 {% import 'audio_macro.html' as audio %}
 
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+{% extends "layout.html" %}
 
+{% block title %}Listas{% endblock %}
 
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+{% block head %}
+  {{ super() }}
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.min.css') }}">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/modal_form.css') }}">
 
-	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='js/listas.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/listas.js') }}"></script>
+{% endblock %}
 
-	<title>Ingresar</title>
 
-</head>
-
-<body>
-<div class="container">
-	<table id="table_lista" class="display">
-		<thead>
-			<tr>
-				<th>id</th>
-				<th>Nombre</th>
-			</tr>
-		</thead>
-		<tbody>
-
-			{% if listas!=None -%}
-				{% for lista in listas %}
-				<tr id="lista_{{ lista.id }}" listaId="{{ lista.id }}" nombre="{{ lista.nombre }}">
-					<td name="id">{{ lista.id }}</td>
-					<td name="nombre">{{ lista.nombre }}</td>
+{% block content %}
+<div class="row">
+	<div class="col-xs-12 col-sm-6">
+		<table id="table_lista" class="display">
+			<thead>
+				<tr>
+					<th>id</th>
+					<th>Nombre</th>
 				</tr>
+			</thead>
+			<tbody>
 
-				{% endfor %}
-			{%- endif %}
-		</tbody>
-	</table>
+				{% if listas!=None -%}
+					{% for lista in listas %}
+					<tr id="lista_{{ lista.id }}" listaId="{{ lista.id }}" nombre="{{ lista.nombre }}">
+						<td name="id">{{ lista.id }}</td>
+						<td name="nombre">{{ lista.nombre }}</td>
+					</tr>
 
-	<button id="btn_agregar" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#modalPOST">Agregar</button>
-	<button id="btn_editar" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#modalPUT" disabled="true">Editar</button>
-	<button id="btn_borrar" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#modalDELETE" disabled="true">Borrar</button>
+					{% endfor %}
+				{%- endif %}
+			</tbody>
+		</table>
 
+		<button id="btn_agregar" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#modalPOST">Agregar</button>
+		<button id="btn_editar" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#modalPUT" disabled="true">Editar</button>
+		<button id="btn_borrar" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#modalDELETE" disabled="true">Borrar</button>
 
+		{% set inputs = [["nombre",
+						"text",
+						"",
+						"Nombre",
+						"glyphicon-user"
+						]] -%}
+
+		{{ modal.modal(onsubmit="acciones_lista", titulo="Ingresar Lista", boton_text="Ingresar", method="POST", url=url_for('acciones_lista'), inputs=inputs) }}
+
+		{% set inputs = [
+						["lista_id",
+							"hidden",
+							"",
+							"",
+							None
+							],
+						["nombre",
+							"text",
+							"",
+							"Nombre",
+							"glyphicon-user"
+							]] -%}
+
+		{{ modal.modal(onsubmit="acciones_lista", titulo="Editar Lista", boton_text="Editar", method="PUT", url=url_for('acciones_lista'), inputs=inputs) }}
+
+		{% set inputs = [
+						["lista_id",
+							"hidden",
+							"",
+							"",
+							None
+							]] -%}
+
+		{{ modal.modal(onsubmit="acciones_lista", titulo="Eliminar Lista", boton_text="Eliminar", method="DELETE", 
+			url=url_for('acciones_lista'), inputs=inputs, mensaje="¿Seguro que desea eliminar la lista?") }}
+	</div>
 </div>
+{% endblock %}
 
-
-<!-- Modal -->
-
-{% set inputs = [["nombre",
-					"text",
-					"",
-					"Nombre",
-					"glyphicon-user"
-					]] -%}
-
-{{ modal.modal(onsubmit="acciones_lista", titulo="Ingresar Lista", boton_text="Ingresar", method="POST", url=url_for('acciones_lista'), inputs=inputs) }}
-
-{% set inputs = [
-				["lista_id",
-					"hidden",
-					"",
-					"",
-					None
-					],
-				["nombre",
-					"text",
-					"",
-					"Nombre",
-					"glyphicon-user"
-					]] -%}
-
-{{ modal.modal(onsubmit="acciones_lista", titulo="Editar Lista", boton_text="Editar", method="PUT", url=url_for('acciones_lista'), inputs=inputs) }}
-
-{% set inputs = [
-				["lista_id",
-					"hidden",
-					"",
-					"",
-					None
-					]] -%}
-
-{{ modal.modal(onsubmit="acciones_lista", titulo="Eliminar Lista", boton_text="Eliminar", method="DELETE", 
-	url=url_for('acciones_lista'), inputs=inputs, mensaje="¿Seguro que desea eliminar la lista?") }}
-
-
-</body>
-
-</html>
 
