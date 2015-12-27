@@ -1,66 +1,76 @@
 {% import 'modal_macro.html' as modal %}
 {% import 'audio_macro.html' as audio %}
 
+{% extends "layout.html" %}
+
+{% block title %}Canciones{% endblock %}
+
+{% block head %}
 <!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	{{ super() }}
 
-
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.min.css') }}">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/modal_form.css') }}">
+	<style type="text/css">
+		.wrapper{
+			display: table;
+			overflow: hidden;
+			background: #fff;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+			margin: 10px auto;
+			width: 100%;
+			padding:10px;
+		}
 
-	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+	</style>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/canciones.js') }}"></script>
 
-	<title>Ingresar</title>
 
-</head>
+{% endblock %}
 
-<body>
-<div class="container">
-	<table id="table_cancion" class="display">
-		<thead>
-			<tr>
-				<th>id</th>
-				<th>Título</th>
-				<th>Artista</th>
-				<th>Formato</th>
-				<th>Fecha Subida</th>
-			</tr>
-		</thead>
-		<tbody>
+{% block content %}
+<div class="row">
+	<div class="col-xs-12">
+		<h3>Canciones</h3>
+		<div class="wrapper">
+			<table id="table_cancion" class="display">
+				<thead>
+					<tr>
+						<th>id</th>
+						<th>Título</th>
+						<th>Artista</th>
+						<th>Formato</th>
+						<th>Fecha Subida</th>
+					</tr>
+				</thead>
+				<tbody>
 
-			{% if canciones!=None -%}
-				{% for cancion in canciones %}
-				<tr id="cancion_{{ cancion.id }}" data-value="{{ url_for('static', filename='music/'~usuario_sesion ~'/'~ cancion.id ~'.'~ cancion.formato ) }}" titulo="{{ cancion.titulo }}" artista="{{ cancion.artista }}">
+					{% if canciones!=None -%}
+						{% for cancion in canciones %}
+						<tr id="cancion_{{ cancion.id }}" data-value="{{ url_for('static', filename='music/'~usuario_sesion ~'/'~ cancion.id ~'.'~ cancion.formato ) }}" titulo="{{ cancion.titulo }}" artista="{{ cancion.artista }}">
 
-					<td name="id">{{ cancion.id }}</td>
-					<td name="titulo">{{ cancion.titulo }}</td>
-					<td name="artista">{{ cancion.artista }}</td>
-					<td name="formato">{{ cancion.formato }}</td>
-					<td name="fecha_subida">{{ cancion.fecha_subida }}</td>
-				</tr>
+							<td name="id">{{ cancion.id }}</td>
+							<td name="titulo">{{ cancion.titulo }}</td>
+							<td name="artista">{{ cancion.artista }}</td>
+							<td name="formato">{{ cancion.formato }}</td>
+							<td name="fecha_subida">{{ cancion.fecha_subida }}</td>
+						</tr>
 
-				{% endfor %}
-			{%- else %}
-				<p>No hay canciones</p>
-			{%- endif %}
-		</tbody>
-	</table>
+						{% endfor %}
+					{%- endif %}
+				</tbody>
+			</table>
+		</div>
+		<div style="margin-top: 20px">
+			<button id="btn_agregar" class="btn btn-primary" data-toggle="modal" data-target="#modalPOST">Agregar</button>
+			<button id="btn_editar" class="btn btn-primary" data-toggle="modal" data-target="#modalPUT" disabled="true">Editar</button>
+			<button id="btn_borrar" class="btn btn-primary" data-toggle="modal" data-target="#modalDELETE" disabled="true">Borrar</button>
+		</div>
+		<div style="margin-top: 20px">
+			{{ audio.audio_player("audio", "mp3Source") }}
+		</div>
+	</div>
 
-	<button id="btn_agregar" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#modalPOST">Agregar</button>
-	<button id="btn_editar" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#modalPUT" disabled="true">Editar</button>
-	<button id="btn_borrar" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#modalDELETE" disabled="true">Borrar</button>
-
-	{{ audio.audio_player("audio", "mp3Source") }}
-
-</div>
 
 
 <!-- Modal -->
@@ -118,7 +128,6 @@
 	url=url_for('acciones_cancion'), inputs=inputs, mensaje="¿Seguro que desea eliminar la canción?") }}
 
 
-</body>
-
-</html>
+</div>
+{% endblock %}
 

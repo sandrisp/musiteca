@@ -23,10 +23,14 @@ def valida_cancion(cancion):
 	
 	if "cancion_id" in cancion:
 		cancion_id = cancion["cancion_id"]
-		if not cancion_id.isdigit() or int(cancion_id)<=0:
+		try:
+			if int(cancion_id)<=0:
+				error["cancion_id"] = (u"Debe ser un número positivo mayor que 0.")
+			elif select_cancion_by_id(cancion_id)==None:
+				error["cancion_id"] = (u"La canción no existe.")
+		except Exception as inst:
 			error["cancion_id"] = (u"Debe ser un número positivo mayor que 0.")
-		elif select_cancion_by_id(cancion_id)==None:
-			error["cancion_id"] = (u"La canción no existe.")
+
 
 	if "usuario_id" in cancion:
 		usuario_id = cancion["usuario_id"]

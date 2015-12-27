@@ -39,8 +39,11 @@ def valida_lista_has_cancion(lista_has_cancion):
 
 	if "orden" in lista_has_cancion:
 		orden = lista_has_cancion["orden"]
-		if not orden.isdigit() or int(orden)<0:
-			error["orden"] = (u"Debe ser un número positivo mayor o igual que 0.")
+		try:
+			if int(orden)<=0:
+				error["orden"] = (u"Debe ser un número positivo mayor que 0.")
+		except Exception as inst:
+			error["orden"] = (u"Debe ser un número positivo mayor que 0.")
 
 	if not len(error):
 		salida = {"valido": True, "error": error}
@@ -93,6 +96,22 @@ def select_canciones_by_lista(lista_id):
 				WHERE lhc.lista_id=%s
 				ORDER BY lhc.orden"""
 	cursor.execute(sql, [int(lista_id)])
+	existe = cursor.fetchall()
+	cursor.close() 
+	conn.close()
+
+	if len(existe) > 0:
+		listas = existe
+		return listas
+	return None
+def select_cancion_by_usuario_select_lista(usuario_id, lista_id):
+	conn = DBConnector.conectarDB()
+	cursor = conn.cursor(MySQLdb.cursors.DictCursor)
+	sql = """SELECT *, IF(lhc.lista_id=%s, 'selected', '') selected 
+				FROM cancion ca 
+				LEFT JOIN lista_has_cancion lhc ON ca.id=lhc.cancion_id 
+				WHERE ca.usuario_id=%s"""
+	cursor.execute(sql, [int(lista_id), int(usuario_id)])
 	existe = cursor.fetchall()
 	cursor.close() 
 	conn.close()

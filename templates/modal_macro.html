@@ -37,9 +37,6 @@
 				{%- endif %}
 				
 				>
-					{% if mensaje!=None -%}
-						<p>{{mensaje}}</p>
-					{%- endif %}
 					{% for inp in inputs -%}
 						{% if inp[1]=="hidden" -%}	
 							<div>
@@ -52,6 +49,11 @@
 					{% if file!=None -%}
 						{{ input_file(file[0], accept=file[1], glyphicon=file[2]) }}
 					{%- endif %}
+					{% if mensaje!=None -%}
+						{{mensaje}}
+					{%- endif %}
+
+					<div id="extraDiv{{ method }}"></div>
 
 				</form>
 			</div>

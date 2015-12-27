@@ -2,12 +2,13 @@
 import MySQLdb
 import DBConnector
 import Usuario
+import ListaHasCancion
 
 TABLA_NOMBRE = "lista"
 TABLA_ATRIBUTOS = ["id", "usuario_id", "nombre"]
 
 INSERT_ATRIBUTOS = ("usuario_id" ,"nombre")
-UPDATE_ATRIBUTOS = ("lista_id","nombre")
+UPDATE_ATRIBUTOS = ("lista_id","nombre", "canciones")
 DELETE_ATRIBUTOS = ("lista_id")
 
 def valida_lista(lista):
@@ -19,10 +20,13 @@ def valida_lista(lista):
 	
 	if "lista_id" in lista:
 		lista_id = lista["lista_id"]
-		if not lista_id.isdigit() or int(lista_id)<=0:
+		try:
+			if int(lista_id)<=0:
+				error["lista_id"] = (u"Debe ser un número positivo mayor que 0.")
+			elif select_lista_by_id(lista_id)==None:
+				error["lista_id"] = (u"La lista no existe.")
+		except Exception as inst:
 			error["lista_id"] = (u"Debe ser un número positivo mayor que 0.")
-		elif select_lista_by_id(lista_id)==None:
-			error["lista_id"] = (u"La lista no existe.")
 
 	if "usuario_id" in lista:
 		usuario_id = lista["usuario_id"]
@@ -124,6 +128,16 @@ def update_lista(lista):
 
 	lista_id = lista["lista_id"];
 	nombre = lista["nombre"];
+
+	canciones = lista["canciones"]
+
+	canciones_a_eliminar = ListaHasCancion.select_canciones_by_lista(lista_id)
+	if canciones_a_eliminar!=None:
+		for cancion in canciones_a_eliminar:
+			ListaHasCancion.delete_lista_has_cancion({"lista_id": lista_id, "cancion_id": cancion["id"]})
+
+	for i in canciones:
+		ListaHasCancion.insert_lista_has_cancion({"lista_id": lista_id, "cancion_id": i})
 
 	conn = DBConnector.conectarDB()
 	cursor = conn.cursor()

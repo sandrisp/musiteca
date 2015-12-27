@@ -70,6 +70,9 @@ $(document).ready( function () {
 
 } );
 
+
+
+
 window.onbeforeunload = unloadPage;
 function unloadPage() {
 	noneAudio();

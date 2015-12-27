@@ -40,6 +40,8 @@ $(document).ready( function () {
 
 	$('#btn_editar').click( function () {
 
+		noneAudio();
+
 		accion="PUT";
 		form = $("form[name='form"+accion+"']");
 
@@ -49,10 +51,14 @@ $(document).ready( function () {
 		value = $('tr.selected').attr("nombre");
 		form.find("input[name=nombre]").attr("value", value);
 
+		editar_lista();
 
 	} );
 	
 	$('#btn_borrar').click( function () {
+
+		noneAudio();
+
 		accion="DELETE";
 		form = $("form[name='form"+accion+"']");
 
@@ -97,6 +103,7 @@ function deselect_row(row){
 	$('#btn_editar').attr('disabled', true);
 	$('#btn_borrar').attr('disabled', true);
 
+	$("#Audio_Col").html('<div class="wrapper">Seleccion una lista.</div>')
 	
 }
 function select_row(row){
@@ -110,7 +117,15 @@ function select_row(row){
 	uploadAudio(row);
 }
 
-
+function editar_lista(){
+	selected = jTable.find(".selected");
+	$.ajax({type: "PUT",
+		url: "/lista/"+selected.attr('listaId'),
+		success: function(respuesta){
+			$("#extraDivPUT").html(respuesta);
+		}
+	});
+}
 
 function acciones_lista(accion, url){ 
 	noneAudio();

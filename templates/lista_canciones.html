@@ -33,6 +33,13 @@
 				<button class="btn" data-action="next" id="btn-next"><span></span></button>
 			</li>
 		</ul>
+		<ul class="list-inline">
+			<li>
+				
+				<span class="glyphicon glyphicon-random"></span>
+				
+			</li>
+		</ul>
 	</div>
 </div>
 
@@ -55,7 +62,7 @@
 	playlist = []
 	for( i in canciones){
 		playlist[i] = {
-			file: "static/music/{{usuario_sesion}}/"+canciones[i].id+"."+canciones[i].formato,
+			file: "/static/music/{{usuario_sesion}}/"+canciones[i].id+"."+canciones[i].formato,
 			thumb: "",
 			trackName: canciones[i].titulo,
 			trackArtist: canciones[i].artista,

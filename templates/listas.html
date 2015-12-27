@@ -9,44 +9,66 @@
   {{ super() }}
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.min.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jaudio.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap-duallistbox.css') }}">
+
+	<style type="text/css">
+.wrapper{
+	display: table;
+	overflow: hidden;
+	background: #fff;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+	margin: 10px auto;
+	width: 100%;
+	padding:10px;
+}
+
+	</style>
 
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/listas.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jaudio.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.bootstrap-duallistbox.js') }}"></script>
+
 {% endblock %}
 
 
 {% block content %}
 <div class="row">
 	<div class="col-xs-12 col-sm-6">
-		<table id="table_lista" class="display">
-			<thead>
-				<tr>
-					<th>id</th>
-					<th>Nombre</th>
-				</tr>
-			</thead>
-			<tbody>
-
-				{% if listas!=None -%}
-					{% for lista in listas %}
-					<tr id="lista_{{ lista.id }}" listaId="{{ lista.id }}" nombre="{{ lista.nombre }}">
-						<td name="id">{{ lista.id }}</td>
-						<td name="nombre"><span class="glyphicon glyphicon-music" aria-hidden="true"></span>&nbsp;{{ lista.nombre }}</td>
+		<h3>Listas</h3>
+		<div class="wrapper">
+			<table id="table_lista" class="display">
+				<thead>
+					<tr>
+						<th>id</th>
+						<th>Nombre</th>
 					</tr>
+				</thead>
+				<tbody>
 
-					{% endfor %}
-				{%- endif %}
-			</tbody>
-		</table>
+					{% if listas!=None -%}
+						{% for lista in listas %}
+						<tr id="lista_{{ lista.id }}" listaId="{{ lista.id }}" nombre="{{ lista.nombre }}">
+							<td name="id">{{ lista.id }}</td>
+							<td name="nombre"><span class="glyphicon glyphicon-music" aria-hidden="true"></span>&nbsp;{{ lista.nombre }}</td>
+						</tr>
 
-		<button id="btn_agregar" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#modalPOST">Agregar</button>
-		<button id="btn_editar" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#modalPUT" disabled="true">Editar</button>
-		<button id="btn_borrar" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#modalDELETE" disabled="true">Borrar</button>
+						{% endfor %}
+					{%- endif %}
+				</tbody>
+			</table>	
+		</div>
+
+		<div style="margin-top: 20px">
+			<button id="btn_agregar" class="btn btn-primary" data-toggle="modal" data-target="#modalPOST">Agregar</button>
+			<button id="btn_editar" class="btn btn-primary" data-toggle="modal" data-target="#modalPUT" disabled="true">Editar</button>
+			<button id="btn_borrar" class="btn btn-primary" data-toggle="modal" data-target="#modalDELETE" disabled="true">Borrar</button>
+		</div>
 	</div>
 	<div id="Audio_Col" class="col-xs-12 col-sm-6">
-
+		<div class="wrapper">Seleccion una lista.</div>
 	</div>
+
 		{% set inputs = [["nombre",
 						"text",
 						"",

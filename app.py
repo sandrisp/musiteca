@@ -80,7 +80,7 @@ def valid_insert_user():
 	return jsonify(Usuario.valida_usuario(user))
 
 
-@app.route('/cancion', methods=['GET', 'POST','PUT','DELETE'])
+@app.route('/cancion/', methods=['GET', 'POST','PUT','DELETE'])
 def acciones_cancion():
 	usuario_sesion = check_sesion()
 	if not usuario_sesion:
@@ -91,6 +91,7 @@ def acciones_cancion():
 
 	if request.method == 'GET':
 		canciones = Cancion.select_cancion_by_usuario(usuario_sesion)
+		
 		return render_template("canciones.html", canciones=canciones, usuario_sesion=usuario_sesion)
 
 	if request.method == 'POST':
@@ -130,7 +131,7 @@ def acciones_cancion():
 
 	return jsonify({"valido":False, "error":"Método no disponible para el recurso canción."})
 
-@app.route('/lista', methods=['GET', 'POST','PUT','DELETE'])
+@app.route('/lista/', methods=['GET', 'POST','PUT','DELETE'])
 def acciones_lista():
 	usuario_sesion = check_sesion()
 	if not usuario_sesion:
@@ -155,13 +156,13 @@ def acciones_lista():
 		return jsonify(respuesta)
 
 	if request.method == 'PUT':
-		if not all (k in Lista.UPDATE_ATRIBUTOS for k in request.form):
-			return jsonify({"valido":False, "error":"No todos los atributos para el método."})
+		#if not all (k in Lista.UPDATE_ATRIBUTOS for k in request.form):
+		#	return jsonify({"valido":False, "error":"No todos los atributos para el método."})
 		
 
 		lista["lista_id"] = request.form["lista_id"]
 		lista["nombre"] = request.form["nombre"]
-
+		lista["canciones"] = request.form.getlist("canciones")
 		respuesta = Lista.update_lista(lista)
 		return jsonify(respuesta)
 
@@ -190,6 +191,11 @@ def acciones_lista_has_cancion(lista_id):
 		canciones = ListaHasCancion.select_canciones_by_lista(lista_id)	
 
 		return render_template("lista_canciones.html", lista=lista, canciones=canciones, usuario_sesion=usuario_sesion)
+
+	if request.method == 'PUT':
+
+		canciones_usuario = ListaHasCancion.select_cancion_by_usuario_select_lista(usuario_sesion, lista_id)
+		return render_template("multiselect_canciones.html",canciones_usuario=canciones_usuario)
 
 	return jsonify({"valido":False, "error":"Método no disponible para el recurso lista."})
 
