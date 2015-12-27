@@ -11,6 +11,7 @@ from flask import (
 import Usuario
 import Cancion
 import Lista
+import ListaHasCancion
 from StreamConsumingMiddleware import StreamConsumingMiddleware
 
 app = Flask(__name__)
@@ -32,7 +33,7 @@ def check_sesion():
 @app.route('/hello/<name>')
 def hello(name=None):
 	# return "hello World!"
-	return render_template('hello.html', name=name, user_id=session["user_id"])
+	return render_template('Barra_navegacion.html', name=name, user_id=session["user_id"])
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -78,26 +79,6 @@ def valid_insert_user():
 			}
 	return jsonify(Usuario.valida_usuario(user))
 
-@app.route('/valida/<recurso>', methods=['POST'])
-def valida(recurso=None):
-	if recurso=="cancion":
-		cancion = request.form.copy()
-		cancion["archivos"] = request.files
-		return jsonify(Cancion.valida_cancion(cancion))
-
-	if recurso=="usuario":
-		usuario = request.form.copy()
-		return jsonify(Usuario.valida_usuario(usuario))
-
-	if recurso=="lista":
-		lista = request.form.copy()
-		return jsonify(Lista.valida_lista(lista))
-
-	if recurso=="lista_has_cancion":
-		lista_has_cancion = request.form.copy()
-		return jsonify(ListaHasCancion.valida_lista_has_cancion(lista_has_cancion))
-
-	return jsonify({"valido":False, "error":"Recurso no disponible."})
 
 @app.route('/cancion', methods=['GET', 'POST','PUT','DELETE'])
 def acciones_cancion():
@@ -192,6 +173,23 @@ def acciones_lista():
 
 		respuesta = Lista.delete_lista(lista)
 		return jsonify(respuesta)
+
+	return jsonify({"valido":False, "error":"Método no disponible para el recurso lista."})
+
+@app.route('/lista/<lista_id>', methods=['GET', 'POST','PUT','DELETE'])
+def acciones_lista_has_cancion(lista_id):
+	usuario_sesion = check_sesion()
+	if not usuario_sesion:
+		return redirect(url_for('login'))
+
+	error=None
+	lista = {}
+
+	if request.method == 'GET':
+		lista = Lista.select_lista_by_id(lista_id)
+		canciones = ListaHasCancion.select_canciones_by_lista(lista_id)	
+
+		return render_template("lista_canciones.html", lista=lista, canciones=canciones, usuario_sesion=usuario_sesion)
 
 	return jsonify({"valido":False, "error":"Método no disponible para el recurso lista."})
 

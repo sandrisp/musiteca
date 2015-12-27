@@ -8,9 +8,11 @@
 {% block head %}
   {{ super() }}
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jaudio.css') }}">
 
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/listas.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/listas.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/jaudio.js') }}"></script>
 {% endblock %}
 
 
@@ -30,7 +32,7 @@
 					{% for lista in listas %}
 					<tr id="lista_{{ lista.id }}" listaId="{{ lista.id }}" nombre="{{ lista.nombre }}">
 						<td name="id">{{ lista.id }}</td>
-						<td name="nombre">{{ lista.nombre }}</td>
+						<td name="nombre"><span class="glyphicon glyphicon-music" aria-hidden="true"></span>&nbsp;{{ lista.nombre }}</td>
 					</tr>
 
 					{% endfor %}
@@ -41,7 +43,10 @@
 		<button id="btn_agregar" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#modalPOST">Agregar</button>
 		<button id="btn_editar" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#modalPUT" disabled="true">Editar</button>
 		<button id="btn_borrar" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#modalDELETE" disabled="true">Borrar</button>
+	</div>
+	<div id="Audio_Col" class="col-xs-12 col-sm-6">
 
+	</div>
 		{% set inputs = [["nombre",
 						"text",
 						"",
@@ -77,7 +82,7 @@
 
 		{{ modal.modal(onsubmit="acciones_lista", titulo="Eliminar Lista", boton_text="Eliminar", method="DELETE", 
 			url=url_for('acciones_lista'), inputs=inputs, mensaje="¿Seguro que desea eliminar la lista?") }}
-	</div>
+	
 </div>
 {% endblock %}
 

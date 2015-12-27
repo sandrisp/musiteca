@@ -5,7 +5,7 @@
 var table;
 var jTable;
 $(document).ready( function () {
-	jTable = $('#table_lista');
+	jTable = $('#table_cancion');
 	table = jTable.DataTable({
 					ordering: true,
 					paging: false,
@@ -13,7 +13,7 @@ $(document).ready( function () {
 					"language": {
 						"search": "",
 						"zeroRecords": "No se encontraron resultados",
-						"infoEmpty": "No hay listas",
+						"infoEmpty": "No hay canciones",
 						"searchPlaceholder": "Buscar"
 					},
 					"columnDefs": [
@@ -21,13 +21,13 @@ $(document).ready( function () {
 					],
 					"columns": [
 						{ "searchable": false},
-						null
+						null,
+						null,
+						null,
+						{ "searchable": false }
 					]
 				});
-
 	$('div.dataTables_filter input').addClass('form-control');
-
-
 
 	jTable.find('tbody').on( 'click', 'tr', function () {
 		if ( $(this).hasClass('selected') ) {
@@ -35,20 +35,26 @@ $(document).ready( function () {
 
 		} else {
 			select_row($(this));
+
+
 		}
 	} );
+
 
 	$('#btn_editar').click( function () {
 
 		accion="PUT";
 		form = $("form[name='form"+accion+"']");
 
-		value = $('tr.selected').attr("listaId");
-		form.find("input[name=lista_id]").attr("value", value);
+		value = $('tr.selected td[name=id]').html();
+		form.find("input[name=cancion_id]").attr("value", value);
 		
-		value = $('tr.selected').attr("nombre");
-		form.find("input[name=nombre]").attr("value", value);
+		value = $('tr.selected td[name=titulo]').html();
+		form.find("input[name=titulo]").attr("value", value);
 
+		value = $('tr.selected td[name=artista]').html();
+		form.find("input[name=artista]").attr("value", value);
+		
 
 	} );
 	
@@ -57,8 +63,8 @@ $(document).ready( function () {
 		form = $("form[name='form"+accion+"']");
 
 		value = $('tr.selected td[name=id]').html();
-		form.find("input[name=lista_id]").attr("value", value);
-		
+		form.find("input[name=cancion_id]").attr("value", value);
+
 	} );
 
 
@@ -70,18 +76,14 @@ function unloadPage() {
 }
 
 function uploadAudio(selected){
-
-	$.ajax({type: "GET",
-		url: "/lista/"+selected.attr('listaId'),
-		success: function(respuesta){
-			$("#Audio_Col").html(respuesta);
-		}, 
-		dataType: "html"
-	});
+	audio = $('#mp3Source');
+	var timestamp = new Date().getTime();
+	audio.attr( "src", selected.attr('data-value')+ "?i=" +timestamp);
+	audio.trigger('load');
 }
 
 function noneAudio(){
-	audio = $('audio');
+	audio = $('#mp3Source');
 	audio.trigger("pause");
 	audio.removeAttr( "src");
 	audio.trigger('load');
@@ -100,43 +102,44 @@ function deselect_row(row){
 	
 }
 function select_row(row){
-	noneAudio();
-
 	$('tr.selected').removeClass('selected');
 	row.addClass('selected');
 	$('#btn_editar').attr('disabled', false);
 	$('#btn_borrar').attr('disabled', false);
 
-	uploadAudio(row);
+	selected = jTable.find(".selected");
+
+	uploadAudio(selected);
 }
 
 
 
-function acciones_lista(accion, url){ 
-	noneAudio();
+function acciones_cancion(accion, url){ 
 	method = accion;
 	form = $("form[name='form"+accion+"']");
 	var formData;
-	formData = form.serialize();
-	
+	if(method=="POST"){
+		formData = new FormData(form[0]);
+	}else{
+		formData = form.serialize();
+	}
 	
 	var return_data = "hola";
 	success = function(respuesta) { 
 
 			if(respuesta["valido"]){
 				$('#modal'+method).modal('hide');
-				lista = respuesta["lista"];
-				
+				cancion = respuesta["cancion"];
 				if(method=="POST"){
-					jTable.find("tbody").append(createRow(lista));
-					select_row($("#lista_"+ lista["id"]));
+					jTable.find("tbody").append(createRow(cancion));
+					select_row($("#cancion_"+ cancion["id"]));
 				}else if(method=="PUT"){
-					$("#lista_"+ lista["id"]).remove();
-					jTable.find("tbody").append(createRow(lista));
-					select_row($("#lista_"+ lista["id"]));
+					$("#cancion_"+ cancion["id"]).remove();
+					jTable.find("tbody").append(createRow(cancion));
+					select_row($("#cancion_"+ cancion["id"]));
 				}else if(method=="DELETE"){
-					deselect_row($("#lista_"+ lista["id"]));
-					$("#lista_"+ lista["id"]).remove();
+					deselect_row($("#cancion_"+ cancion["id"]));
+					$("#cancion_"+ cancion["id"]).remove();
 				}
 				table.draw();
 				return true;
@@ -152,12 +155,15 @@ function acciones_lista(accion, url){
 		}
 	dataType = "json";
 
+	if(method=="POST"){
+		processData=false;
+		contentType=false;
+	}else{
+		processData=true;
+		contentType='application/x-www-form-urlencoded; charset=UTF-8';
+	}
 
-	processData=true;
-	contentType='application/x-www-form-urlencoded; charset=UTF-8';
-	
-
-	
+	noneAudio();
 
 	$.ajax({type: method,
 			url: url, 
@@ -171,10 +177,14 @@ function acciones_lista(accion, url){
 	return false;
 }
 
-function createRow(lista){
-	return "<tr id='lista_"+ lista["id"] + "' " +
-				"listaId='"+ lista["id"] +"' nombre='"+ lista["nombre"] + "' >"+
-				"<td name='id'>"+ lista["id"] + "</td>" +
-				"<td name='nombre'>"+ lista["nombre"] + "</td>" +
-			"</tr>";
+function createRow(cancion){
+	return "<tr id='cancion_"+ cancion["id"] +
+				"' data-value='/static/music/"+ cancion["usuario_id"] +'/'+ cancion["id"] + '.'+ cancion["formato"]+"'"+
+				"titulo='"+cancion["titulo"]+"' artista='" + cancion["artista"]+"' >"+
+				"<td name='id'>"+ cancion["id"] + "</td>" +
+				"<td name='titulo'>"+ cancion["titulo"] + "</td>" +
+				"<td name='artista'>"+ cancion["artista"] + "</td>" +
+				"<td name='formato'>"+ cancion["formato"] + "</td>" +
+				"<td name='fecha_subida'>"+ cancion["fecha_subida"] + "</td>" +
+			"</tr>"
 }
