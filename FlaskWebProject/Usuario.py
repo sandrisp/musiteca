@@ -28,20 +28,22 @@ def valid_login(usuario, password):
 
 	if len(error):
 		return {"valido": False, "error": error}
+	try:
+		conn = DBConnector.conectarDB()
+		hash_pass = PasswordHandler.encode(usuario, password)
+		cursor = conn.cursor(MySQLdb.cursors.DictCursor)
 
-	conn = DBConnector.conectarDB()
-	hash_pass = PasswordHandler.encode(usuario, password)
-	cursor = conn.cursor(MySQLdb.cursors.DictCursor)
+		sql = "SELECT id FROM usuario where usuario =%s AND password=%s"
+		cursor.execute(sql, [usuario, hash_pass])
+		existe = cursor.fetchall()
+		cursor.close()
 
-	sql = "SELECT id FROM usuario where usuario =%s AND password=%s"
-	cursor.execute(sql, [usuario, hash_pass])
-	existe = cursor.fetchall()
-	cursor.close()
-
-	if len(existe) > 0:
-		usuario_id = existe[0]["id"]
-		return {"valido":True, "usuario_id":usuario_id}
-	return {"valido":False, "usuario_id":-1}
+		if len(existe) > 0:
+			usuario_id = existe[0]["id"]
+			return {"valido":True, "usuario_id":usuario_id}
+		return {"valido":False, "usuario_id":-1}
+	except Exception as inst:
+		return {"valido":False, "inst":inst}
 
 
 def valida_usuario(user):
