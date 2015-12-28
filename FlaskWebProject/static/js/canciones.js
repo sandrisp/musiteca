@@ -191,6 +191,13 @@ function acciones_cancion(accion, url){
 			contentType: contentType
 	});
 
+	 	alert = $("<div class='alert alert-success' role='alert' style='margin-top:25px'>"+
+				"<span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>"+
+				"<span class='sr-only'>Error:</span>"+
+				"&nbsp;" + "Cargando..." + 
+			"</div>");
+	 	form.append(alert);
+
 	return false;
 }
 
