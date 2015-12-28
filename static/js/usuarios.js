@@ -1,12 +1,5 @@
-
-
-
-
 var table;
 var jTable;
-
-
-
 
 function acciones_usuario(url){ 
 	method = "PUT";
@@ -63,6 +56,6 @@ function createAlert(error){
 	return 	"<div class='alert alert-danger' role='alert' style='margin-top:25px'>"+
 				"<span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>"+
 				"<span class='sr-only'>Error:</span>"+
-				error + 
+				"&nbsp;" + error + 
 			"</div>";
 }

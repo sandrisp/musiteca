@@ -18,18 +18,27 @@
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.bootstrap-duallistbox.js') }}"></script>
 <style type="text/css">
 	.jAudio--player{
-		background-image: url('{{ url_for('static', filename='images/fondo_body.jpg') }}')!important;
+		background-image: url('{{ url_for('static', filename='images/escuchando_musica.jpg') }}')!important;
 		background-size:100% auto!important;	
 	}
 
 </style>
+
+	<style type="text/css">
+	body{
+		background-image: url('{{ url_for('static', filename='images/fondo_body.jpg') }}')!important;
+		background-size:100% auto!important;	
+	}
+	</style>
 {% endblock %}
 
 
 {% block content %}
 <div class="row">
 	<div class="col-xs-12 col-sm-6">
-		<h3>Listas</h3>
+		<div class="wrapper">
+			<h3>Listas</h3>
+		</div>
 		<div class="wrapper">
 			<table id="table_lista" class="display">
 				<thead>
@@ -51,12 +60,11 @@
 					{%- endif %}
 				</tbody>
 			</table>	
-		</div>
-
-		<div style="margin-top: 20px">
-			<button id="btn_agregar" class="btn btn-primary" data-toggle="modal" data-target="#modalPOST">Agregar</button>
-			<button id="btn_editar" class="btn btn-primary" data-toggle="modal" data-target="#modalPUT" disabled="true">Editar</button>
-			<button id="btn_borrar" class="btn btn-primary" data-toggle="modal" data-target="#modalDELETE" disabled="true">Borrar</button>
+			<div style="margin-top: 20px">
+				<button id="btn_agregar" class="btn btn-primary" data-toggle="modal" data-target="#modalPOST">Agregar</button>
+				<button id="btn_editar" class="btn btn-primary" data-toggle="modal" data-target="#modalPUT" disabled="true">Editar</button>
+				<button id="btn_borrar" class="btn btn-primary" data-toggle="modal" data-target="#modalDELETE" disabled="true">Borrar</button>
+			</div>
 		</div>
 	</div>
 	<div id="Audio_Col" class="col-xs-12 col-sm-6">

@@ -160,8 +160,7 @@ function acciones_cancion(accion, url){
 				}
 				return true;
 			}
-			$(".alert").remove();
-			form.find('input').closest("div").removeClass("has-error");
+			cleanError();
 			error = respuesta["error"];
 			$.each(error, function(i, item) {
 				form.find('input[name='+i+']').closest("div").addClass("has-error");
@@ -211,7 +210,7 @@ function createAlert(error){
 	return 	"<div class='alert alert-danger' role='alert' style='margin-top:25px'>"+
 				"<span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>"+
 				"<span class='sr-only'>Error:</span>"+
-				error + 
+				"&nbsp;" + error + 
 			"</div>";
 }
 
@@ -221,4 +220,7 @@ function cleanError(){
 }
 function limpia_input(){
 	$("input").val("");
+	$('form[name=formPOST]')[0].reset();
+	$('form[name=formPUT]')[0].reset();
+	$('form[name=formDELETE]')[0].reset();
 }

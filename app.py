@@ -190,10 +190,6 @@ def acciones_lista():
 		return jsonify(respuesta)
 
 	if request.method == 'PUT':
-		#if not all (k in Lista.UPDATE_ATRIBUTOS for k in request.form):
-		#	return jsonify({"valido":False, "error":"No todos los atributos para el método."})
-		
-
 		lista["lista_id"] = request.form["lista_id"]
 		lista["nombre"] = request.form["nombre"]
 		lista["canciones"] = request.form.getlist("canciones")
@@ -234,5 +230,5 @@ def acciones_lista_has_cancion(lista_id):
 
 if __name__ == "__main__":
 	app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
-	app.run(debug=True)
+	app.run(debug=False)
 

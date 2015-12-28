@@ -49,7 +49,7 @@ $(document).ready( function () {
 	$('#btn_editar').click( function () {
 		cleanError();
 		noneAudio();
-
+		limpia_input();
 		accion="PUT";
 		form = $("form[name='form"+accion+"']");
 
@@ -147,7 +147,6 @@ function acciones_lista(accion, url){
 	
 	var return_data = "hola";
 	success = function(respuesta) { 
-			$(".alert").remove();
 			table_lista = $('#table_lista');
 			if(respuesta["valido"]){
 				$('#modal'+method).modal('hide');
@@ -172,7 +171,7 @@ function acciones_lista(accion, url){
 				return true;
 			}
 
-			form.find('input').closest("div").removeClass("has-error");
+			cleanError();
 			error = respuesta["error"];
 			$.each(error, function(i, item) {
 				form.find('input[name='+i+']').closest("div").addClass("has-error");
@@ -215,7 +214,7 @@ function createAlert(error){
 	return 	"<div class='alert alert-danger' role='alert' style='margin-top:25px'>"+
 				"<span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>"+
 				"<span class='sr-only'>Error:</span>"+
-				error + 
+				"&nbsp;" + error + 
 			"</div>";
 }
 function cleanError(){
@@ -224,4 +223,7 @@ function cleanError(){
 }
 function limpia_input(){
 	$("input").val("");
+	$('form[name=formPOST]')[0].reset();
+	$('form[name=formPUT]')[0].reset();
+	$('form[name=formDELETE]')[0].reset();
 }

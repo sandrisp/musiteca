@@ -62,7 +62,7 @@ def valida_usuario(user):
 			error["usuario_id"] = (u"Debe ser un número positivo mayor que 0.")
 	if "usuario" in user:
 		usuario = user["usuario"]
-		patron_usuario = "^[a-zA-Z]+([-+.']\w+)*$"
+		patron_usuario = "^[a-zA-Z]+([-.]\w+)*$"
 		patron = re.compile(patron_usuario)
 		if patron.match(usuario)==None:
 			error["usuario"] = (u"Debe iniciar con una letra y le puede seguir letras, números, . o _.")

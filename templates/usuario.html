@@ -9,7 +9,12 @@
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/login.css') }}">
 
 	<script type="text/javascript" src="{{ url_for('static', filename='js/usuarios.js') }}"></script>
-
+	<style type="text/css">
+	body{
+		background-image: url('{{ url_for('static', filename='images/fondo_body.jpg') }}')!important;
+		background-size:100% auto!important;	
+	}
+	</style>
 {% endblock %}
 
 {% block content %}
@@ -17,7 +22,7 @@
 <div class="div-signin wrapper">
 
 <form name="formPUT" onsubmit="return acciones_usuario('{{ url_for('acciones_usuario', usuario_id=usuario_sesion)  }}')" method="POST" class="form-signin">
-	<h2 class="form-signin-heading">Mi perfile</h2>
+	<h2 class="form-signin-heading">Mi Perfil</h2>
 	<input type="hidden" name="usuario_id" value="{{usuario_sesion}}">
 	<div style="margin-bottom: 25px" class="input-group">
 		<label for="usuario" class="input-group-addon">

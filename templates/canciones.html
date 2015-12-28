@@ -12,14 +12,21 @@
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.min.css') }}">
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/canciones.js') }}"></script>
-
+	<style type="text/css">
+	body{
+		background-image: url('{{ url_for('static', filename='images/fondo_body.jpg') }}')!important;
+		background-size:100% auto!important;	
+	}
+	</style>
 
 {% endblock %}
 
 {% block content %}
 <div class="row">
 	<div class="col-xs-12">
-		<h3>Canciones</h3>
+		<div class="wrapper">
+			<h3>Canciones</h3>
+		</div>
 		<div class="wrapper">
 			<table id="table_cancion" class="display">
 				<thead>
@@ -48,14 +55,16 @@
 					{%- endif %}
 				</tbody>
 			</table>
-		</div>
-		<div style="margin-top: 20px">
-			<button id="btn_agregar" class="btn btn-primary" data-toggle="modal" data-target="#modalPOST">Agregar</button>
-			<button id="btn_editar" class="btn btn-primary" data-toggle="modal" data-target="#modalPUT" disabled="true">Editar</button>
-			<button id="btn_borrar" class="btn btn-primary" data-toggle="modal" data-target="#modalDELETE" disabled="true">Borrar</button>
-		</div>
-		<div style="margin-top: 20px">
-			{{ audio.audio_player("audio", "mp3Source") }}
+			<div class="row">
+				<div class="col-xs-12 col-sm-6" style="margin-top: 20px">
+					<button id="btn_agregar" class="btn btn-primary" data-toggle="modal" data-target="#modalPOST">Agregar</button>
+					<button id="btn_editar" class="btn btn-primary" data-toggle="modal" data-target="#modalPUT" disabled="true">Editar</button>
+					<button id="btn_borrar" class="btn btn-primary" data-toggle="modal" data-target="#modalDELETE" disabled="true">Borrar</button>
+				</div>
+				<div class="col-xs-12 col-sm-6" style="margin-top: 20px">
+					{{ audio.audio_player("audio", "mp3Source") }}
+				</div>
+			</div>
 		</div>
 	</div>
 
