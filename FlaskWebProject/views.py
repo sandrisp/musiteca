@@ -64,9 +64,10 @@ def login():
 										request.form['password'])
 
 		if respuesta["valido"]:
-
-			session["user_id"] = respuesta["usuario_id"]
-			return jsonify(respuesta)
+			try:
+				session["user_id"] = respuesta["usuario_id"]
+			except Exception as inst:
+				return jsonify({"valido":False, "inst": inst})
 			return redirect(url_for('acciones_lista'))
 		else:
 			error = u"Usuario o contraseña no corresponden"
