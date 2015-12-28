@@ -33,13 +33,6 @@
 				<button class="btn" data-action="next" id="btn-next"><span></span></button>
 			</li>
 		</ul>
-		<ul class="list-inline">
-			<li>
-				
-				<span class="glyphicon glyphicon-random"></span>
-				
-			</li>
-		</ul>
 	</div>
 </div>
 
@@ -73,7 +66,8 @@
 	if(playlist.length!=0){
 		var t = { playlist: playlist }
 		$(".jAudio--player").jAudio(t);
+		$("audio").get(0).volume = 1;
 	}else{
-		$(".jAudio--details").html("No hay canciones en la lista.");
+		$(".jAudio--details").html("<p><span>No hay canciones en la lista.</span></p>");
 	}
 </script>

@@ -4,9 +4,7 @@
 
 var table;
 var jTable;
-$(document).ready( function () {
-	jTable = $('#table_lista');
-	table = jTable.DataTable({
+var parametros_table = {
 					ordering: true,
 					paging: false,
 					info: false,
@@ -23,7 +21,10 @@ $(document).ready( function () {
 						{ "searchable": false},
 						null
 					]
-				});
+				};
+$(document).ready( function () {
+	jTable = $('#table_lista');
+	table = jTable.DataTable(parametros_table);
 
 	$('div.dataTables_filter input').addClass('form-control');
 
@@ -38,32 +39,39 @@ $(document).ready( function () {
 		}
 	} );
 
-	$('#btn_editar').click( function () {
+	$('#btn_agregar').click( function () {
+		cleanError();
+		noneAudio();
+		limpia_input();
 
+	} );
+
+	$('#btn_editar').click( function () {
+		cleanError();
 		noneAudio();
 
 		accion="PUT";
 		form = $("form[name='form"+accion+"']");
 
 		value = $('tr.selected').attr("listaId");
-		form.find("input[name=lista_id]").attr("value", value);
+		form.find("input[name=lista_id]").val(value);
 		
 		value = $('tr.selected').attr("nombre");
-		form.find("input[name=nombre]").attr("value", value);
+		form.find("input[name=nombre]").val(value);
 
 		editar_lista();
 
 	} );
 	
 	$('#btn_borrar').click( function () {
-
+		cleanError();
 		noneAudio();
 
 		accion="DELETE";
 		form = $("form[name='form"+accion+"']");
 
 		value = $('tr.selected td[name=id]').html();
-		form.find("input[name=lista_id]").attr("value", value);
+		form.find("input[name=lista_id]").val(value);
 		
 	} );
 
@@ -108,7 +116,9 @@ function deselect_row(row){
 }
 function select_row(row){
 	noneAudio();
-
+	if(row.attr("listaid")==undefined){
+		return
+	}
 	$('tr.selected').removeClass('selected');
 	row.addClass('selected');
 	$('#btn_editar').attr('disabled', false);
@@ -137,23 +147,28 @@ function acciones_lista(accion, url){
 	
 	var return_data = "hola";
 	success = function(respuesta) { 
-
+			$(".alert").remove();
+			table_lista = $('#table_lista');
 			if(respuesta["valido"]){
 				$('#modal'+method).modal('hide');
 				lista = respuesta["lista"];
 				
 				if(method=="POST"){
-					jTable.find("tbody").append(createRow(lista));
+					jRow = $(createRow(lista));
+					table.row.add(jRow).draw();
 					select_row($("#lista_"+ lista["id"]));
 				}else if(method=="PUT"){
-					$("#lista_"+ lista["id"]).remove();
-					jTable.find("tbody").append(createRow(lista));
+
+					table.row($("#lista_"+ lista["id"])).remove();
+					jRow = $(createRow(lista));
+					table.row.add(jRow).draw();
 					select_row($("#lista_"+ lista["id"]));
 				}else if(method=="DELETE"){
 					deselect_row($("#lista_"+ lista["id"]));
-					$("#lista_"+ lista["id"]).remove();
+					table.row($("#lista_"+ lista["id"])).remove();
+					table.draw();
 				}
-				table.draw();
+				
 				return true;
 			}
 
@@ -161,6 +176,7 @@ function acciones_lista(accion, url){
 			error = respuesta["error"];
 			$.each(error, function(i, item) {
 				form.find('input[name='+i+']').closest("div").addClass("has-error");
+				form.find('input[name='+i+']').closest("div").after(createAlert(item));
 			});
 
 			return false;
@@ -190,6 +206,22 @@ function createRow(lista){
 	return "<tr id='lista_"+ lista["id"] + "' " +
 				"listaId='"+ lista["id"] +"' nombre='"+ lista["nombre"] + "' >"+
 				"<td name='id'>"+ lista["id"] + "</td>" +
-				"<td name='nombre'>"+ lista["nombre"] + "</td>" +
+				"<td name='nombre'>"+ 
+					'<span class="glyphicon glyphicon glyphicon-list" aria-hidden="true"></span>&nbsp;' +lista["nombre"] + 
+				"</td>" +
 			"</tr>";
+}
+function createAlert(error){
+	return 	"<div class='alert alert-danger' role='alert' style='margin-top:25px'>"+
+				"<span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>"+
+				"<span class='sr-only'>Error:</span>"+
+				error + 
+			"</div>";
+}
+function cleanError(){
+	$(".alert").remove();
+	$("form").find('input').closest("div").removeClass("has-error");
+}
+function limpia_input(){
+	$("input").val("");
 }

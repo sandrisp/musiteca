@@ -5,64 +5,29 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/login.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/general.css') }}">
+
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/singup.js') }}"></script>
+
 	<title>Ingresar</title>
-
-	<script type="text/javascript">
-	
-		$(document).ready(function(){
-
-		})
-
-		function valid_insert_user(){ 
-
-			url = "{{ url_for('valid_insert_user')  }}";
-			data = $("form[name='singup']").serialize();
-
-			var return_data = "hola";
-			success = function(respuesta) { 
-
-					if(respuesta["valido"]){
-
-						action="{{ url_for('singup')  }}"
-						$("form[name=singup]").attr("action", action);
-						$("form[name=singup]").removeAttr("onsubmit");
-						$("form[name=singup]").submit();
-
-						return true;
-					}
-
-					$('form[name=singup] input').closest("div").removeClass("has-error");
-					error = respuesta["error"];
-					$.each(error, function(i, item) {
-						$('input[name='+i+']').closest("div").addClass("has-error");
-					});
-
-					$("form[name=singup]").removeAttr("action");
-					return false;
-				}
-			dataType = "json";
-
-			$.ajax({method: "POST",url: url, data: data, success: success, dataType: dataType});
-
-			return false;
-		}
-
-
-	</script>
 
 
 </head>
 <body>
+<div class="container">
 
+<div class="div-signin wrapper">
 
-<form name="singup" onsubmit="return valid_insert_user()" method="POST">
+<form name="singup" onsubmit="return valid_insert_user('{{ url_for('valid_insert_user')  }}', '{{ url_for('singup')  }}')" method="POST" class="form-signin">
+	<h2 class="form-signin-heading">Registrate</h2>
 	<div style="margin-bottom: 25px" class="input-group">
 		<label for="nombre" class="input-group-addon">
 			<span class="glyphicon glyphicon-user"></span>
 		</label>
-		<input name="nombre" type="text" class="form-control" value="" placeholder="Nombre">
+		<input name="nombre" type="text" class="form-control" value="" placeholder="Nombre y Apellido">
 	</div>
 	<div style="margin-bottom: 25px" class="input-group">
 		<label for="usuario" class="input-group-addon">
@@ -75,7 +40,6 @@
 			<span class="glyphicon glyphicon-lock"></span>
 		</label>
 		<input name="password" type="password" class="form-control" value="" placeholder="Contraseña">
-		<span class="glyphicon glyphicon-lock form-control-feedback" aria-hidden="true"></span>
 	</div>
 	<div style="margin-bottom: 25px" class="input-group">
 		<label for="correo" class="input-group-addon">
@@ -91,8 +55,18 @@
 	</div>
 	<input class="btn btn-primary" type="submit" value="Aceptar">
 	{% if error != None %}
-		<span style="color:red">{{ error }}</span>
+		{%  for e in error %}
+			<div class="alert alert-danger" role="alert" style="margin-top:25px">
+				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+				<span class="sr-only">Error:</span>
+				{{ e }}
+			</div>
+		{% endfor %}
 	{% endif %}
 </form>
+
+</div>
+</div>
+
 </body>
 </html>

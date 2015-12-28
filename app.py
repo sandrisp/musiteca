@@ -17,10 +17,13 @@ from StreamConsumingMiddleware import StreamConsumingMiddleware
 app = Flask(__name__)
 app.wsgi_app = StreamConsumingMiddleware(app.wsgi_app)
 
-@app.route("/null")
-@app.route("/null/")
-def no_null():
-	return ""
+@app.route("/")
+def index_musiteca():
+	usuario_sesion = check_sesion()
+	if not usuario_sesion:
+		return redirect(url_for('login'))
+
+	return redirect(url_for('acciones_lista'))
 
 def check_sesion():
 	if "user_id" not in session or session["user_id"]==None:
@@ -29,31 +32,34 @@ def check_sesion():
 		return session["user_id"]
 
 
-@app.route("/hello/")
-@app.route('/hello/<name>')
-def hello(name=None):
-	# return "hello World!"
-	return render_template('Barra_navegacion.html', name=name, user_id=session["user_id"])
-
+@app.route("/logout")
+def logout():
+	if "user_id" in session:
+		session["user_id"]=None
+	return redirect(url_for('login'))
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	error = None
 	if request.method == 'POST':
 		respuesta = Usuario.valid_login(request.form['usuario'],
 										request.form['password'])
+
 		if respuesta["valido"]:
 			session["user_id"] = respuesta["usuario_id"]
-			return redirect(url_for('hello', name=request.form['usuario']))
+			return redirect(url_for('acciones_lista'))
 		else:
 			error = u"Usuario o contraseña no corresponden"
 			return render_template("login.html", error=error)
 	else:
 		return render_template("login.html", error=error)
 
-@app.route('/singup', methods=['GET', 'POST'])
+@app.route('/usuario/', methods=['GET', 'POST'])
 def singup():
+	usuario_sesion = check_sesion()
 	error = None
 	if request.method == 'POST':
+		if usuario_sesion:
+			return redirect(url_for('logout'))
 		user = {"usuario": request.form['usuario'].strip(),
 				"password": request.form['password'].strip(),
 				"correo": request.form['correo'].strip(),
@@ -66,8 +72,12 @@ def singup():
 		else:
 			error = respuesta["error"]
 			return render_template("singup.html", error=error)
-	else:
+
+	if request.method == 'GET':
+		if usuario_sesion:
+			return redirect(url_for('logout'))
 		return render_template("singup.html", error=error)
+
 
 @app.route('/valid_singup', methods=['POST'])
 def valid_insert_user():
@@ -79,7 +89,31 @@ def valid_insert_user():
 			}
 	return jsonify(Usuario.valida_usuario(user))
 
+@app.route('/usuario/<usuario_id>', methods=['GET', 'PUT'])
+def acciones_usuario(usuario_id):
+	usuario_sesion = check_sesion()
+	if not usuario_sesion:
+		return redirect(url_for('login'))
 
+	if(str(usuario_sesion)!=usuario_id):
+		return redirect(url_for('logout'))
+
+	if request.method == 'GET':
+		usuario = Usuario.select_usuario(usuario_id)
+		return render_template("usuario.html", usuario=usuario, usuario_sesion=usuario_sesion)
+	
+	if request.method == 'PUT':
+		if not all (k in Usuario.UPDATE_ATRIBUTOS for k in request.form):
+			return jsonify({"valido":False, "error":"No todos los atributos para el método."})
+		
+		usuario={}
+		usuario["usuario_id"] = usuario_sesion
+		usuario["nombre"] = request.form["nombre"]
+		usuario["correo"] = request.form["correo"]
+		usuario["nacimiento"] = request.form["nacimiento"]
+
+		respuesta = Usuario.update_usuario(usuario)
+		return jsonify(respuesta)
 @app.route('/cancion/', methods=['GET', 'POST','PUT','DELETE'])
 def acciones_cancion():
 	usuario_sesion = check_sesion()
@@ -189,7 +223,6 @@ def acciones_lista_has_cancion(lista_id):
 	if request.method == 'GET':
 		lista = Lista.select_lista_by_id(lista_id)
 		canciones = ListaHasCancion.select_canciones_by_lista(lista_id)	
-
 		return render_template("lista_canciones.html", lista=lista, canciones=canciones, usuario_sesion=usuario_sesion)
 
 	if request.method == 'PUT':

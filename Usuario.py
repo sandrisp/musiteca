@@ -6,10 +6,33 @@ import PasswordHandler
 TABLA_NOMBRE = "usuario"
 TABLA_ATRIBUTOS = ["id", "usuario", "password", "correo", "nombre", "nacimiento"]
 
+INSERT_ATRIBUTOS = ("usuario","password","correo","nombre","nacimiento")
+UPDATE_ATRIBUTOS = ("usuario_id","correo","nombre","nacimiento")
+
+
 def valid_login(usuario, password):	
+	import re
+	error = {}
+	user={"usuario": usuario, "password": password}
+	if "usuario" in user:
+		usuario = user["usuario"]
+		patron_usuario = "^[a-zA-Z]+([-+.']\w+)*$"
+		patron = re.compile(patron_usuario)
+		if patron.match(usuario)==None:
+			error["usuario"] = (u"Debe iniciar con una letra y le puede seguir letras, números, . o _.")
+	
+	if "password" in user:
+		password = user["password"]
+		if not password:
+			error["password"] = (u"Debe ingresar una contraseña.")
+
+	if len(error):
+		return {"valido": False, "error": error}
+
 	conn = DBConnector.conectarDB()
 	hash_pass = PasswordHandler.encode(usuario, password)
 	cursor = conn.cursor(MySQLdb.cursors.DictCursor)
+
 	sql = "SELECT id FROM usuario where usuario =%s AND password=%s"
 	cursor.execute(sql, [usuario, hash_pass])
 	existe = cursor.fetchall()
@@ -94,7 +117,7 @@ def valida_usuario(user):
 
 def insert_usuario(user):
 	
-	INSERT_ATRIBUTOS = ("usuario","password","correo","nombre","nacimiento")
+	
 	if (not all (k in user for k in INSERT_ATRIBUTOS)) or (not all (k in INSERT_ATRIBUTOS for k in user)):
 		respuesta = {"valido": False, "error":"Para insertar se necesita solo el usuario, password, correo, nombre y nacimiento"}
 		return respuesta
@@ -131,8 +154,8 @@ def insert_usuario(user):
 def select_usuario(usuario_id):
 	conn = DBConnector.conectarDB()
 	cursor = conn.cursor(MySQLdb.cursors.DictCursor)
-	sql = "SELECT id, usuario, password, correo, nombre, nacimiento FROM usuario where id=%s"
-	cursor.execute(sql, [int(usuario_id)])
+	sql = "SELECT id, usuario, correo, nombre, DATE_FORMAT(nacimiento, %s) nacimiento FROM usuario where id=%s"
+	cursor.execute(sql, ['%d/%m/%Y', int(usuario_id)])
 	existe = cursor.fetchall()
 	cursor.close()
 
@@ -143,9 +166,9 @@ def select_usuario(usuario_id):
 
 def update_usuario(usuario):
 	
-	UPDATE_ATRIBUTOS = ("usuario_id","correo","nombre","nacimiento")
+	
 	if (not all (k in usuario for k in UPDATE_ATRIBUTOS)) or (not all (k in UPDATE_ATRIBUTOS for k in usuario)):
-		respuesta = {"valido": False, "error":"Para actualizar se necesita solo el usuario_id, correo, nombre y nacimiento"}
+		respuesta = {"valido": False, "error":"Para actualizar se necesita solo el usuario_id, correo, nombre y nacimiento", "usuario": usuario}
 		return respuesta
 
 	respuesta = valida_usuario(usuario)
@@ -168,9 +191,13 @@ def update_usuario(usuario):
 	try:
 		affected_count = cursor.execute(sql, [correo, nombre, nacimiento, '%d/%m/%Y', usuario_id])
 		conn.commit()
+		salida = {"usuario":usuario, "valido":True}
+
 	except Exception as inst:
 		salida = {"valido": False, "error": inst}
 	finally:
 		cursor.close()
+		conn.close()
+		
 	
 	return salida

@@ -324,7 +324,7 @@
 
         template += "<div class='jAudio--playlist-item' data-track='" + file + "'>";
 
-        template += "<div class='jAudio--playlist-thumb'><img src='"+ thumb +"'></div>";
+        template += "<div class='jAudio--playlist-thumb'><span class='glyphicon glyphicon glyphicon-music' aria-hidden='true'></div>";
 
         template += "<div class='jAudio--playlist-meta-text'>";
         template += "<h4>" + trackName + "</h4>";

@@ -11,24 +11,18 @@
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jaudio.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap-duallistbox.css') }}">
 
-	<style type="text/css">
-.wrapper{
-	display: table;
-	overflow: hidden;
-	background: #fff;
-	box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
-	margin: 10px auto;
-	width: 100%;
-	padding:10px;
-}
-
-	</style>
 
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/listas.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jaudio.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.bootstrap-duallistbox.js') }}"></script>
+<style type="text/css">
+	.jAudio--player{
+		background-image: url('{{ url_for('static', filename='images/fondo_body.jpg') }}')!important;
+		background-size:100% auto!important;	
+	}
 
+</style>
 {% endblock %}
 
 
@@ -50,7 +44,7 @@
 						{% for lista in listas %}
 						<tr id="lista_{{ lista.id }}" listaId="{{ lista.id }}" nombre="{{ lista.nombre }}">
 							<td name="id">{{ lista.id }}</td>
-							<td name="nombre"><span class="glyphicon glyphicon-music" aria-hidden="true"></span>&nbsp;{{ lista.nombre }}</td>
+							<td name="nombre"><span class="glyphicon glyphicon glyphicon-list" aria-hidden="true"></span>&nbsp;{{ lista.nombre }}</td>
 						</tr>
 
 						{% endfor %}

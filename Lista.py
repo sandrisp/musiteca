@@ -39,7 +39,7 @@ def valida_lista(lista):
 		patron_nombre = "^[a-zA-Zá-úÁ-Ú0-9 ]+$"
 		patron = re.compile(patron_nombre)
 		if patron.match(nombre)==None:
-			error["nombre"] = (u"No es un nombre válido. Solo se permiten letras y espacios.")
+			error["nombre"] = (u"No es un nombre válido. Solo se permiten letras,números y espacios.")
 
 
 	if not len(error):

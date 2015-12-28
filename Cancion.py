@@ -229,12 +229,12 @@ def delete_cancion(cancion):
 		conn.commit()
 
 		salida = {"valido": True, "cancion": {"id":cancion_id}}
+		os.remove(UPLOAD_FOLDER+"/"+str(usuario_id)+"/"+ cancion_id+"."+formato)
 	except Exception as inst2:
 		salida = {"valido": False, "error": inst2}
-		return salida
 	finally:
 		cursor.close()
 		conn.close()
-	os.remove(UPLOAD_FOLDER+"/"+str(usuario_id)+"/"+ cancion_id+"."+formato)
+	
 	
 	return salida

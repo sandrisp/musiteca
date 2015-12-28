@@ -10,18 +10,6 @@
 	{{ super() }}
 
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.min.css') }}">
-	<style type="text/css">
-		.wrapper{
-			display: table;
-			overflow: hidden;
-			background: #fff;
-			box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
-			margin: 10px auto;
-			width: 100%;
-			padding:10px;
-		}
-
-	</style>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/canciones.js') }}"></script>
 
@@ -47,10 +35,10 @@
 
 					{% if canciones!=None -%}
 						{% for cancion in canciones %}
-						<tr id="cancion_{{ cancion.id }}" data-value="{{ url_for('static', filename='music/'~usuario_sesion ~'/'~ cancion.id ~'.'~ cancion.formato ) }}" titulo="{{ cancion.titulo }}" artista="{{ cancion.artista }}">
+						<tr id="cancion_{{ cancion.id }}" data-value="{{ url_for('static', filename='music/'~usuario_sesion ~'/'~ cancion.id ~'.'~ cancion.formato ) }}" titulo="{{ cancion.titulo }}" artista="{{ cancion.artista }}" cancionId="{{ cancion.id }}">
 
 							<td name="id">{{ cancion.id }}</td>
-							<td name="titulo">{{ cancion.titulo }}</td>
+							<td name="titulo"><span class="glyphicon glyphicon glyphicon-music" aria-hidden="true"></span>&nbsp;{{ cancion.titulo }}</td>
 							<td name="artista">{{ cancion.artista }}</td>
 							<td name="formato">{{ cancion.formato }}</td>
 							<td name="fecha_subida">{{ cancion.fecha_subida }}</td>
@@ -89,7 +77,7 @@
 					]] -%}
 {% set file=["archivo",
 				'audio/mp3',
-				"glyphicon-user"
+				"glyphicon-music"
 				] -%}
 
 {{ modal.modal(onsubmit="acciones_cancion", titulo="Ingresar Canción", boton_text="Ingresar", method="POST", url=url_for('acciones_cancion'), inputs=inputs, file=file) }}

@@ -40,37 +40,44 @@ $(document).ready( function () {
 		}
 	} );
 
+	$('#btn_agregar').click( function () {
+		cleanError();
+		noneAudio();
+		limpia_input();
+
+	} );
 
 	$('#btn_editar').click( function () {
+
+		cleanError();
 
 		accion="PUT";
 		form = $("form[name='form"+accion+"']");
 
-		value = $('tr.selected td[name=id]').html();
-		form.find("input[name=cancion_id]").attr("value", value);
+		value = $('tr.selected').attr("cancionid");
+		form.find("input[name=cancion_id]").val(value);
 		
-		value = $('tr.selected td[name=titulo]').html();
-		form.find("input[name=titulo]").attr("value", value);
+		value = $('tr.selected').attr("titulo");
+		form.find("input[name=titulo]").val(value);
 
-		value = $('tr.selected td[name=artista]').html();
-		form.find("input[name=artista]").attr("value", value);
+		value = $('tr.selected').attr("artista");
+		form.find("input[name=artista]").val(value);
 		
 
 	} );
 	
 	$('#btn_borrar').click( function () {
 		accion="DELETE";
+		cleanError();
 		form = $("form[name='form"+accion+"']");
 
 		value = $('tr.selected td[name=id]').html();
-		form.find("input[name=cancion_id]").attr("value", value);
+		form.find("input[name=cancion_id]").val(value);
 
 	} );
 
 
 } );
-
-
 
 
 window.onbeforeunload = unloadPage;
@@ -83,6 +90,7 @@ function uploadAudio(selected){
 	var timestamp = new Date().getTime();
 	audio.attr( "src", selected.attr('data-value')+ "?i=" +timestamp);
 	audio.trigger('load');
+
 }
 
 function noneAudio(){
@@ -105,6 +113,9 @@ function deselect_row(row){
 	
 }
 function select_row(row){
+	if(row.attr("cancionid")==undefined){
+		return
+	}
 	$('tr.selected').removeClass('selected');
 	row.addClass('selected');
 	$('#btn_editar').attr('disabled', false);
@@ -134,24 +145,27 @@ function acciones_cancion(accion, url){
 				$('#modal'+method).modal('hide');
 				cancion = respuesta["cancion"];
 				if(method=="POST"){
-					jTable.find("tbody").append(createRow(cancion));
+					jRow = $(createRow(cancion));
+					table.row.add(jRow).draw();
 					select_row($("#cancion_"+ cancion["id"]));
 				}else if(method=="PUT"){
-					$("#cancion_"+ cancion["id"]).remove();
-					jTable.find("tbody").append(createRow(cancion));
+					table.row($("#cancion_"+ cancion["id"])).remove();
+					jRow = $(createRow(cancion));
+					table.row.add(jRow).draw();
 					select_row($("#cancion_"+ cancion["id"]));
 				}else if(method=="DELETE"){
 					deselect_row($("#cancion_"+ cancion["id"]));
-					$("#cancion_"+ cancion["id"]).remove();
+					table.row($("#cancion_"+ cancion["id"])).remove();
+					table.draw();
 				}
-				table.draw();
 				return true;
 			}
-
+			$(".alert").remove();
 			form.find('input').closest("div").removeClass("has-error");
 			error = respuesta["error"];
 			$.each(error, function(i, item) {
 				form.find('input[name='+i+']').closest("div").addClass("has-error");
+				form.find('input[name='+i+']').closest("div").after(createAlert(item));
 			});
 
 			return false;
@@ -183,11 +197,28 @@ function acciones_cancion(accion, url){
 function createRow(cancion){
 	return "<tr id='cancion_"+ cancion["id"] +
 				"' data-value='/static/music/"+ cancion["usuario_id"] +'/'+ cancion["id"] + '.'+ cancion["formato"]+"'"+
-				"titulo='"+cancion["titulo"]+"' artista='" + cancion["artista"]+"' >"+
+				"titulo='"+cancion["titulo"]+"' artista='" + cancion["artista"]+"' cancionId='"+ cancion["id"] +"' >"+
 				"<td name='id'>"+ cancion["id"] + "</td>" +
-				"<td name='titulo'>"+ cancion["titulo"] + "</td>" +
+				"<td name='titulo'>"+ 
+					'<span class="glyphicon glyphicon glyphicon-music" aria-hidden="true"></span>&nbsp;'+
+					cancion["titulo"] + "</td>" +
 				"<td name='artista'>"+ cancion["artista"] + "</td>" +
 				"<td name='formato'>"+ cancion["formato"] + "</td>" +
 				"<td name='fecha_subida'>"+ cancion["fecha_subida"] + "</td>" +
 			"</tr>"
+}
+function createAlert(error){
+	return 	"<div class='alert alert-danger' role='alert' style='margin-top:25px'>"+
+				"<span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>"+
+				"<span class='sr-only'>Error:</span>"+
+				error + 
+			"</div>";
+}
+
+function cleanError(){
+	$(".alert").remove();
+	$("form").find('input').closest("div").removeClass("has-error");
+}
+function limpia_input(){
+	$("input").val("");
 }
