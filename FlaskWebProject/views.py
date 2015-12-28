@@ -12,8 +12,7 @@ from flask import (
 	url_for,
 	#session,
 	Response,
-	jsonify,
-	send_from_directory)
+	jsonify)
 from FlaskWebProject import Usuario
 from FlaskWebProject import Cancion
 from FlaskWebProject import Lista
@@ -24,25 +23,19 @@ import os
 
 session = {}
 
-#@app.route('/music/<user_id>/<cancion_id>.mp3')
-#def streammp3(user_id, cancion_id):
-#    url = url_for('static', filename='music/'+user_id+"/"+cancion_id+".mp3")
-#    url = os.getcwd()+url
-#    def generate(url):
-#        with open(url, "rb") as fwav:
-#            data = fwav.read(1024)
-#            while data:
-#                yield data
-#                data = fwav.read(1024)
-#    return Response(generate(url), mimetype="audio/mp3")
+@app.route('/static/music/<user_id>/<cancion_id>.mp3')
+def streammp3(user_id, cancion_id):
+    url = url_for('static', filename='music/'+user_id+"/"+cancion_id+".mp3");
+    url = os.getcwd()+url
+    def generate(url):
+        with open(url, "rb") as fwav:
+            data = fwav.read(1024)
+            while data:
+                yield data
+                data = fwav.read(1024)
+    return Response(generate(url), mimetype="audio/mp3")
 
-@app.route('/download/<user_id>/<cancion_id>.mp3', methods=['GET'])
-def getFile(user_id, cancion_id):
-	url = url_for('static', filename='music/'+user_id+"/"+cancion_id+".mp3")
-	headers = {"Content-Disposition": "attachment; filename=%s" % cancion_id+".mp3"}
-	with open(url, 'r') as f:
-	    body = f.read()
-	return make_response((body, headers))
+
 
 @app.route("/")
 def index_musiteca():
