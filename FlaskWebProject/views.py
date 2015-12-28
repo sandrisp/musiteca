@@ -21,9 +21,6 @@ from StreamConsumingMiddleware import StreamConsumingMiddleware
 from FlaskWebProject import app
 import os
 
-app = Flask(__name__)
-app.wsgi_app = StreamConsumingMiddleware(app.wsgi_app)
-
 
 @app.route('/static/music/<user_id>/<cancion_id>.mp3')
 def streammp3(user_id, cancion_id):
