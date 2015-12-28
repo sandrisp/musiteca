@@ -10,7 +10,7 @@ from flask import (
 	render_template,
 	redirect,
 	url_for,
-	session,
+	#session,
 	Response,
 	jsonify)
 from FlaskWebProject import Usuario
@@ -21,6 +21,7 @@ from StreamConsumingMiddleware import StreamConsumingMiddleware
 from FlaskWebProject import app
 import os
 
+session = {}
 
 @app.route('/static/music/<user_id>/<cancion_id>.mp3')
 def streammp3(user_id, cancion_id):
@@ -46,6 +47,7 @@ def index_musiteca():
 
 def check_sesion():
 	if "user_id" not in session or session["user_id"]==None:
+
 		return 0
 	else:
 		return session["user_id"]
