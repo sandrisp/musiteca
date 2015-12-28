@@ -35,6 +35,50 @@
 				<button class="btn" data-action="next" id="btn-next"><span></span></button>
 			</li>
 		</ul>
+		<ul class="list-inline">
+			<li>
+				<style type="text/css">
+
+#btn-prev span:before, #btn-prev span:after {
+    border-right: 15px solid #AAA;
+    border-left: 0;
+}
+#btn-play span:before {
+    border-left: 15px solid #aaa;
+    border-right: 0;
+}
+#btn-next span:before, #btn-next span:after {
+    border-left: 15px solid #aaa;
+    border-right: 0;
+}
+.jAudio--controls span.in-list{
+display: inline-block;
+padding: 6px 12px;
+margin-bottom: 0;
+font-size: 14px;
+font-weight: 400;
+line-height: 1.42857143;
+text-align: center;
+white-space: nowrap;
+vertical-align: middle;
+-ms-touch-action: manipulation;
+touch-action: manipulation;
+cursor: pointer;
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+background-image: none;
+border: 1px solid transparent;
+border-radius: 4px;
+width: 100%;
+height: 100%;
+color: #AAA;
+}
+				</style>
+				<span class="glyphicon glyphicon-random in-list" aria-hidden="true" onclick="uploadAudioShuffle()"></span>
+			</li>
+		</ul>
 	</div>
 </div>
 

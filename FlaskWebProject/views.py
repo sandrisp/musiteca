@@ -255,6 +255,14 @@ def acciones_lista_has_cancion(lista_id):
 	if request.method == 'GET':
 		lista = Lista.select_lista_by_id(lista_id)
 		canciones = ListaHasCancion.select_canciones_by_lista(lista_id)	
+		
+		if "orden" in request.args and canciones!=None:
+			import random
+			canciones = list(canciones)
+			shuffled = sorted(canciones, key=lambda k: random.random())
+			canciones = random.shuffle(canciones)
+			return render_template("lista_canciones.html", lista=lista, canciones=shuffled, usuario_sesion=usuario_sesion)
+			
 		return render_template("lista_canciones.html", lista=lista, canciones=canciones, usuario_sesion=usuario_sesion)
 
 	if request.method == 'PUT':

@@ -83,17 +83,27 @@ function unloadPage() {
 	noneAudio();
 }
 
-function uploadAudio(selected){
+function uploadAudio(selected ){
 
 	$.ajax({type: "GET",
 		url: "/lista/"+selected.attr('listaId'),
 		success: function(respuesta){
 			$("#Audio_Col").html(respuesta);
 		}, 
-		dataType: "html"
+		dataType: "html",
 	});
 }
+function uploadAudioShuffle( ){
 
+	$.ajax({type: "GET",
+		url: "/lista/"+$("tbody .selected").attr('listaId'),
+		success: function(respuesta){
+			$("#Audio_Col").html(respuesta);
+		}, 
+		dataType: "html",
+		data: "orden=1"
+	});
+}
 function noneAudio(){
 	audio = $('audio');
 	audio.trigger("pause");
