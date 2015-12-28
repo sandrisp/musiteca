@@ -7,15 +7,32 @@ from flask import (
 	redirect,
 	url_for,
 	session,
+	Response,
 	jsonify)
 import Usuario
 import Cancion
 import Lista
 import ListaHasCancion
 from StreamConsumingMiddleware import StreamConsumingMiddleware
+import os
 
 app = Flask(__name__)
 app.wsgi_app = StreamConsumingMiddleware(app.wsgi_app)
+
+
+@app.route('/static/music/<user_id>/<cancion_id>.mp3')
+def streammp3(user_id, cancion_id):
+    url = url_for('static', filename='music/'+user_id+"/"+cancion_id+".mp3");
+    url = os.getcwd()+url
+    def generate(url):
+        with open(url, "rb") as fwav:
+            data = fwav.read(1024)
+            while data:
+                yield data
+                data = fwav.read(1024)
+    return Response(generate(url), mimetype="audio/mp3")
+
+
 
 @app.route("/")
 def index_musiteca():
@@ -230,5 +247,4 @@ def acciones_lista_has_cancion(lista_id):
 
 if __name__ == "__main__":
 	app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
-	app.run(debug=False)
-
+	app.run(debug=True)

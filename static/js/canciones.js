@@ -88,7 +88,7 @@ function unloadPage() {
 function uploadAudio(selected){
 	audio = $('#mp3Source');
 	var timestamp = new Date().getTime();
-	audio.attr( "src", selected.attr('data-value')+ "?i=" +timestamp);
+	audio.attr( "src", selected.attr('data-value'));
 	audio.trigger('load');
 
 }
