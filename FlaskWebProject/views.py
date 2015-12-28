@@ -119,8 +119,8 @@ def acciones_usuario(usuario_id):
 	#usuario_sesion = check_sesion()
 	#if not usuario_sesion:
 	#	return redirect(url_for('login'))
-	usuario_sesion = 3
-	
+	usuario_sesion = 61
+
 	if(str(usuario_sesion)!=usuario_id):
 		return redirect(url_for('logout'))
 
@@ -146,7 +146,7 @@ def acciones_cancion():
 	#usuario_sesion = check_sesion()
 	#if not usuario_sesion:
 	#	return redirect(url_for('login'))
-	usuario_sesion = 3
+	usuario_sesion = 61
 
 	error=None
 	cancion = {}
@@ -198,7 +198,7 @@ def acciones_lista():
 	#usuario_sesion = check_sesion()
 	#if not usuario_sesion:
 	#	return redirect(url_for('login'))
-	usuario_sesion = 3
+	usuario_sesion = 61
 	error=None
 	lista = {}
 
@@ -240,7 +240,7 @@ def acciones_lista_has_cancion(lista_id):
 	#usuario_sesion = check_sesion()
 	#if not usuario_sesion:
 	#	return redirect(url_for('login'))
-	usuario_sesion = 3
+	usuario_sesion = 61
 	error=None
 	lista = {}
 
