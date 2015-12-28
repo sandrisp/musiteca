@@ -25,7 +25,7 @@ session = {}
 
 @app.route('/static/music/<user_id>/<cancion_id>.mp3')
 def streammp3(user_id, cancion_id):
-    url = url_for('static', filename='music/'+user_id+"/"+cancion_id+".mp3");
+    url = url_for('static', filename='music/'+user_id+"/"+cancion_id+".mp3")
     url = os.getcwd()+url
     def generate(url):
         with open(url, "rb") as fwav:
