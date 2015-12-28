@@ -1,7 +1,8 @@
+# -*- coding: utf-8 -*-
 """
 Routes and views for the flask application.
 """
-# -*- coding: utf-8 -*-
+
 
 from flask import (
 	Flask,
