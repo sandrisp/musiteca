@@ -58,6 +58,7 @@ def logout():
 	if "user_id" in session:
 		session["user_id"]=None
 	return redirect(url_for('login'))
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	error = None
@@ -115,10 +116,11 @@ def valid_insert_user():
 
 @app.route('/usuario/<usuario_id>', methods=['GET', 'PUT'])
 def acciones_usuario(usuario_id):
-	usuario_sesion = check_sesion()
-	if not usuario_sesion:
-		return redirect(url_for('login'))
-
+	#usuario_sesion = check_sesion()
+	#if not usuario_sesion:
+	#	return redirect(url_for('login'))
+	usuario_sesion = 3
+	
 	if(str(usuario_sesion)!=usuario_id):
 		return redirect(url_for('logout'))
 
@@ -138,11 +140,13 @@ def acciones_usuario(usuario_id):
 
 		respuesta = Usuario.update_usuario(usuario)
 		return jsonify(respuesta)
+
 @app.route('/cancion/', methods=['GET', 'POST','PUT','DELETE'])
 def acciones_cancion():
-	usuario_sesion = check_sesion()
-	if not usuario_sesion:
-		return redirect(url_for('login'))
+	#usuario_sesion = check_sesion()
+	#if not usuario_sesion:
+	#	return redirect(url_for('login'))
+	usuario_sesion = 3
 
 	error=None
 	cancion = {}
@@ -191,10 +195,10 @@ def acciones_cancion():
 
 @app.route('/lista/', methods=['GET', 'POST','PUT','DELETE'])
 def acciones_lista():
-	usuario_sesion = check_sesion()
-	if not usuario_sesion:
-		return redirect(url_for('login'))
-
+	#usuario_sesion = check_sesion()
+	#if not usuario_sesion:
+	#	return redirect(url_for('login'))
+	usuario_sesion = 3
 	error=None
 	lista = {}
 
@@ -233,10 +237,10 @@ def acciones_lista():
 
 @app.route('/lista/<lista_id>', methods=['GET', 'POST','PUT','DELETE'])
 def acciones_lista_has_cancion(lista_id):
-	usuario_sesion = check_sesion()
-	if not usuario_sesion:
-		return redirect(url_for('login'))
-
+	#usuario_sesion = check_sesion()
+	#if not usuario_sesion:
+	#	return redirect(url_for('login'))
+	usuario_sesion = 3
 	error=None
 	lista = {}
 
