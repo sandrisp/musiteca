@@ -35,6 +35,14 @@ def streammp3(user_id, cancion_id):
                 data = fwav.read(1024)
     return Response(generate(url), mimetype="audio/mp3")
 
+@app.route('/download/<user_id>/<cancion_id>.mp3', methods=['GET'])
+def getFile(user_id, cancion_id):
+	url = url_for('static', filename='music/'+user_id+"/"+cancion_id+".mp3")
+	url = os.getcwd()+url
+	headers = {"Content-Disposition": "attachment; filename=%s" % cancion_id+".mp3"}
+	with open(url, 'r') as f:
+	    body = f.read()
+	return make_response((body, headers))
 
 
 @app.route("/")
