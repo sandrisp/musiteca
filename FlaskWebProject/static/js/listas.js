@@ -57,7 +57,7 @@ $(document).ready( function () {
 		form.find("input[name=lista_id]").val(value);
 		
 		value = $('tr.selected').attr("nombre");
-		form.find("input[name=nombre]").val(value);
+		form.find("input[name=nombre]").attr("value",value);
 
 		editar_lista();
 

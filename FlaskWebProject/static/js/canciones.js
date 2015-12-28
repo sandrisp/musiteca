@@ -58,10 +58,11 @@ $(document).ready( function () {
 		form.find("input[name=cancion_id]").val(value);
 		
 		value = $('tr.selected').attr("titulo");
-		form.find("input[name=titulo]").val(value);
+		form.find("input[name=titulo]").attr("value",value);
 
 		value = $('tr.selected').attr("artista");
-		form.find("input[name=artista]").val(value);
+		form.find("input[name=artista]").attr("value",value);
+
 		
 
 	} );
