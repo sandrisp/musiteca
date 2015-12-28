@@ -33,6 +33,4 @@ $RECYCLE.BIN/
 # Mac desktop service store files
 .DS_Store
 
-/FlaskWebProject/DBConnector.*
-
 /FlaskWebProject/ModeloMusiteca.*
