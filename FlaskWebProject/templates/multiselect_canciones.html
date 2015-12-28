@@ -1,0 +1,30 @@
+<select multiple="multiple" size="10" name="canciones">
+	{% if canciones_usuario!=None -%}
+		{% for cancion in canciones_usuario %}
+			<option value="{{ cancion.id }}" 
+			{% if cancion.selected=="selected" -%}
+				selected="selected" 
+			{%- endif %}		
+			> 
+			{{ cancion.titulo }} - {{ cancion.artista }}
+			</option>
+		{% endfor %}
+	{%- endif %}
+</select>
+<script type="text/javascript">
+	parameter_dualListbox = {
+		nonSelectedListLabel: 'No en la lista',
+  		selectedListLabel: 'En la lista',
+  		filterTextClear: "Mostrar todas",
+  		filterPlaceHolder: "Buscar",
+  		moveSelectedLabel: "Mover seleccionadas",
+  		moveAllLabel: "Mover todas",
+  		removeSelectedLabel: "Remover seleccionadas",
+  		removeAllLabel: "Remover todas",
+  		infoText:false,
+  		infoTextFiltered: "<span class='label label-warning'>Filtradas</span> {0} de {1}",
+  		infoTextEmpty:"Sin canciones"
+	}
+	$('select[name="canciones"]').bootstrapDualListbox(parameter_dualListbox);
+
+</script>

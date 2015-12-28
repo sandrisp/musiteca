@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/login.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/general.css') }}">
+
+	<style type="text/css">
+	.div-signin{
+		background-image: url('{{ url_for('static', filename='images/escuchando_musica.jpg') }}')!important;
+		background-size:100% 100%!important;
+	}
+	.form-signin .form-signin-heading{
+	  color:white;
+	  text-shadow: 2px 2px rgba(102, 175, 233, .6);
+	}
+	body{
+		background-image: url('{{ url_for('static', filename='images/fondo_body.jpg') }}')!important;
+		background-size:100% auto!important;	
+	}
+	</style>
+
+	<title>Inicia Sesión - Musiteca</title>
+</head>
+<body>
+<div class="container">
+
+<div class="div-signin wrapper">
+
+	<a class="btn btn-primary pull-right" href="{{ url_for('singup') }}">Registrar</a>
+	<form name="login" action="{{ url_for('login')  }}" method="POST" class="form-signin">
+
+		<h2 class="form-signin-heading">Inicia sesión</h2>
+		<div style="margin-bottom: 25px" class="input-group">
+			<label for="usuario" class="input-group-addon">
+				<span class="glyphicon glyphicon-user"></span>
+			</label>
+			<input name="usuario" type="text" class="form-control" value="" placeholder="Usuario">
+		</div>
+		<div style="margin-bottom: 25px" class="input-group">
+			<label for="password" class="input-group-addon">
+				<span class="glyphicon glyphicon-lock"></span>
+			</label>
+			<input name="password" type="password" class="form-control" value="" placeholder="Contraseña">
+		</div>
+		<input class="btn btn-lg btn-primary btn-block" type="submit" value="Ingresa">
+		{% if error != None %}
+			<div class="alert alert-danger" role="alert" style="margin-top:25px">
+				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+				<span class="sr-only">Error:</span>
+				{{ error }}
+			</div>
+		{% endif %}
+		{% if success == 1 %}
+			<div class="alert alert-success" role="alert"> 
+				<strong>Bien hecho!</strong> 
+				Añadido con éxito. 
+			</div>
+		{% endif %}
+	</form>
+</div>
+</div>
+</body>
+</html>

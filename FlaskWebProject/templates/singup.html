@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/login.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/general.css') }}">
+
+	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/singup.js') }}"></script>
+
+	<title>Registrate</title>
+	<style type="text/css">
+	body{
+		background-image: url('{{ url_for('static', filename='images/fondo_body.jpg') }}')!important;
+		background-size:100% auto!important;	
+	}
+	</style>
+
+</head>
+<body>
+<div class="container">
+
+<div class="div-signin wrapper">
+
+<form name="singup" onsubmit="return valid_insert_user('{{ url_for('valid_insert_user')  }}', '{{ url_for('singup')  }}')" method="POST" class="form-signin">
+	<h2 class="form-signin-heading">Registrate</h2>
+	<div style="margin-bottom: 25px" class="input-group">
+		<label for="nombre" class="input-group-addon">
+			<span class="glyphicon glyphicon-user"></span>
+		</label>
+		<input name="nombre" type="text" class="form-control" value="" placeholder="Nombre y Apellido">
+	</div>
+	<div style="margin-bottom: 25px" class="input-group">
+		<label for="usuario" class="input-group-addon">
+			<span class="glyphicon glyphicon-user"></span>
+		</label>
+		<input name="usuario" type="text" class="form-control" value="" placeholder="Usuario">
+	</div>
+	<div style="margin-bottom: 25px" class="input-group">
+		<label for="password" class="input-group-addon">
+			<span class="glyphicon glyphicon-lock"></span>
+		</label>
+		<input name="password" type="password" class="form-control" value="" placeholder="Contraseña">
+	</div>
+	<div style="margin-bottom: 25px" class="input-group">
+		<label for="correo" class="input-group-addon">
+			<span class="glyphicon glyphicon-envelope"></span>
+		</label>
+		<input name="correo" type="text" class="form-control" value="" placeholder="Correo Electrónico">
+	</div>
+	<div style="margin-bottom: 25px" class="input-group">
+		<label for="nacimiento" class="input-group-addon">
+			<span class="glyphicon glyphicon-calendar"></span>
+		</label>
+		<input name="nacimiento" type="text" class="form-control" value="" placeholder="Fecha de Nacimiento: dd/mm/aaaa">
+	</div>
+	<input class="btn btn-primary" type="submit" value="Aceptar">
+	{% if error != None %}
+		{%  for e in error %}
+			<div class="alert alert-danger" role="alert" style="margin-top:25px">
+				<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+				<span class="sr-only">Error:</span>
+				{{ e }}
+			</div>
+		{% endfor %}
+	{% endif %}
+</form>
+
+</div>
+</div>
+
+</body>
+</html>

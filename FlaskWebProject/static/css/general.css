@@ -1,0 +1,9 @@
+.wrapper {
+    display: table;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+    margin: 10px auto;
+    width: 100%;
+    padding: 10px;
+}
