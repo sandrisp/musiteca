@@ -13,10 +13,10 @@ from flask import (
 	session,
 	Response,
 	jsonify)
-import Usuario
-import Cancion
-import Lista
-import ListaHasCancion
+from FlaskWebProject import Usuario
+from FlaskWebProject import Cancion
+from FlaskWebProject import Lista
+from FlaskWebProject import ListaHasCancion
 from StreamConsumingMiddleware import StreamConsumingMiddleware
 from FlaskWebProject import app
 import os

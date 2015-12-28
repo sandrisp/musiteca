@@ -11,5 +11,5 @@ if __name__ == '__main__':
         PORT = int(environ.get('SERVER_PORT', '5555'))
     except ValueError:
         PORT = 5555
-    app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
+    app.secret_key = 'A0Zr98j/4yX R~XHH!jmN]LWX/,?RT'
     app.run(HOST, PORT, debug=True)
