@@ -237,3 +237,15 @@ function limpia_input(){
 	$('form[name=formPUT]')[0].reset();
 	$('form[name=formDELETE]')[0].reset();
 }
+
+function cambiaVolumen(direccion){
+	var vid = $("audio").get(0);
+	direccion = direccion/10;
+	if(vid.volume + direccion >=1 ){
+		vid.volume = 1;
+	}else if (vid.volume + direccion <= 0 ){
+		vid.volume = 0;
+	}else{
+		vid.volume = vid.volume + direccion;
+	}
+}
