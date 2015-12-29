@@ -58,8 +58,8 @@
 				</form>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-				<button type="button" class="btn btn-primary" onclick="$('form[name=form{{method}}]').submit()">{{boton_text}}</button>
+				<button type="button" class="btn btn-default" onclick ="console.log()" data-dismiss="modal">Cancelar</button>
+				<button type="button" class="btn btn-primary" onclick="$('form[name=form{{method}}]').submit(); $(this).prop('disabled', true)">{{boton_text}}</button>
 			</div>
 		</div>
 	</div>

@@ -50,6 +50,7 @@ $(document).ready( function () {
 	$('#btn_editar').click( function () {
 
 		cleanError();
+		limpia_input();
 
 		accion="PUT";
 		form = $("form[name='form"+accion+"']");
@@ -70,6 +71,7 @@ $(document).ready( function () {
 	$('#btn_borrar').click( function () {
 		accion="DELETE";
 		cleanError();
+		limpia_input();
 		form = $("form[name='form"+accion+"']");
 
 		value = $('tr.selected td[name=id]').html();
@@ -191,11 +193,7 @@ function acciones_cancion(accion, url){
 			contentType: contentType
 	});
 
-	 	alert = $("<div class='alert alert-success' role='alert' style='margin-top:25px'>"+
-				"<span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>"+
-				"<span class='sr-only'>Error:</span>"+
-				"&nbsp;" + "Cargando..." + 
-			"</div>");
+	 	alert = $(createCargando());
 	 	form.append(alert);
 
 	return false;
@@ -231,4 +229,12 @@ function limpia_input(){
 	$('form[name=formPOST]')[0].reset();
 	$('form[name=formPUT]')[0].reset();
 	$('form[name=formDELETE]')[0].reset();
+	$(".modal-footer button").prop("disabled", false);
+}
+function createCargando(){
+	return "<div class='alert alert-success' role='alert' style='margin-top:25px'>"+
+				"<span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>"+
+				"<span class='sr-only'>Error:</span>"+
+				"&nbsp;" + "Cargando..." + 
+			"</div>";
 }

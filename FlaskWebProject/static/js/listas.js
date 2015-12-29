@@ -66,7 +66,7 @@ $(document).ready( function () {
 	$('#btn_borrar').click( function () {
 		cleanError();
 		noneAudio();
-
+		limpia_input();
 		accion="DELETE";
 		form = $("form[name='form"+accion+"']");
 
@@ -84,7 +84,7 @@ function unloadPage() {
 }
 
 function uploadAudio(selected ){
-
+	$("#Audio_Col").html(createCargando);
 	$.ajax({type: "GET",
 		url: "/lista/"+selected.attr('listaId'),
 		success: function(respuesta){
@@ -138,6 +138,7 @@ function select_row(row){
 }
 
 function editar_lista(){
+	$("#extraDivPUT").html(createCargando);
 	selected = jTable.find(".selected");
 	$.ajax({type: "PUT",
 		url: "/lista/"+selected.attr('listaId'),
@@ -207,7 +208,9 @@ function acciones_lista(accion, url){
 			processData: processData,  // tell jQuery not to process the data
 			contentType: contentType
 	});
-
+	alert = $(createCargando());
+	form.append(alert);
+	
 	return false;
 }
 
@@ -236,6 +239,7 @@ function limpia_input(){
 	$('form[name=formPOST]')[0].reset();
 	$('form[name=formPUT]')[0].reset();
 	$('form[name=formDELETE]')[0].reset();
+	$(".modal-footer button").prop("disabled", false);
 }
 
 function cambiaVolumen(direccion){
@@ -248,4 +252,12 @@ function cambiaVolumen(direccion){
 	}else{
 		vid.volume = vid.volume + direccion;
 	}
+}
+
+function createCargando(){
+	return "<div class='alert alert-success' role='alert' style='margin-top:25px'>"+
+				"<span class='glyphicon glyphicon-exclamation-sign' aria-hidden='true'></span>"+
+				"<span class='sr-only'>Error:</span>"+
+				"&nbsp;" + "Cargando..." + 
+			"</div>";
 }
