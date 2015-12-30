@@ -261,3 +261,45 @@ function createCargando(){
 				"&nbsp;" + "Cargando..." + 
 			"</div>";
 }
+
+function moveItem(direccion, clicked){
+	item = $(clicked).closest(".jAudio--playlist-item");
+	console.log();
+
+	if(direccion>0){
+		siguiente = item.prev();
+	}else{
+		siguiente = item.next();
+	}
+
+	if(!siguiente.is(".jAudio--playlist-item")){
+		return
+	}
+
+	if(direccion>0){
+		siguiente.before(item);
+	}else{
+		siguiente.after(item);
+	}
+}
+function saveOrden(){
+	
+	multiselect = '<select multiple="multiple" size="10" name="canciones" style="display: none;">'
+
+	$( ".jAudio--playlist-item" ).each(function( index ) {
+	  multiselect += '<option value="'+ $( this ).attr("cancionid") +'" selected="selected"> ';
+	});
+	multiselect += '</select>';
+	
+	multi_form = "<form>" + multiselect + "</form>";
+	
+	selected = $('tr.selected');
+	$.ajax({type: "POST",
+		url: "/lista/"+selected.attr('listaId'),
+		success: function(respuesta){
+			uploadAudio(selected);
+		},
+		data: $(multi_form).serialize()
+	});
+}
+

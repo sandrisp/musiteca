@@ -2,6 +2,47 @@
 	<h4>Reproduciendo: {{lista.nombre}}</h4>
 </div>
 <div class="jAudio--player">
+	<style type="text/css">
+
+		#btn-prev span:before, #btn-prev span:after {
+		    border-right: 15px solid #AAA;
+		    border-left: 0;
+		}
+		#btn-play span:before {
+		    border-left: 15px solid #aaa;
+		    border-right: 0;
+		}
+		#btn-next span:before, #btn-next span:after {
+		    border-left: 15px solid #aaa;
+		    border-right: 0;
+		}
+		.jAudio--controls span.in-list{
+		display: inline-block;
+		padding: 6px 12px;
+		margin-bottom: 0;
+		font-size: 25px;
+		font-weight: 400;
+		line-height: 1.42857143;
+		text-align: center;
+		white-space: nowrap;
+		vertical-align: middle;
+		-ms-touch-action: manipulation;
+		touch-action: manipulation;
+		cursor: pointer;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+		background-image: none;
+		border: 1px solid transparent;
+		border-radius: 4px;
+		width: 100%;
+		height: 100%;
+		color: #AAA;
+		}
+	</style>
+
+
 	<audio preload="none"></audio>
 	<div class="jAudio--ui">
 		<div class="jAudio--thumb"></div>
@@ -37,45 +78,6 @@
 		</ul>
 		<ul class="list-inline">
 			<li>
-				<style type="text/css">
-
-#btn-prev span:before, #btn-prev span:after {
-    border-right: 15px solid #AAA;
-    border-left: 0;
-}
-#btn-play span:before {
-    border-left: 15px solid #aaa;
-    border-right: 0;
-}
-#btn-next span:before, #btn-next span:after {
-    border-left: 15px solid #aaa;
-    border-right: 0;
-}
-.jAudio--controls span.in-list{
-display: inline-block;
-padding: 6px 12px;
-margin-bottom: 0;
-font-size: 25px;
-font-weight: 400;
-line-height: 1.42857143;
-text-align: center;
-white-space: nowrap;
-vertical-align: middle;
--ms-touch-action: manipulation;
-touch-action: manipulation;
-cursor: pointer;
--webkit-user-select: none;
--moz-user-select: none;
--ms-user-select: none;
-user-select: none;
-background-image: none;
-border: 1px solid transparent;
-border-radius: 4px;
-width: 100%;
-height: 100%;
-color: #AAA;
-}
-				</style>
 				<span class="glyphicon glyphicon-random in-list" aria-hidden="true" onclick="uploadAudioShuffle()"></span>
 			</li>
 			<li>
@@ -83,6 +85,17 @@ color: #AAA;
 			</li>
 			<li>
 				<span class="glyphicon glyphicon-volume-up in-list" aria-hidden="true" onclick="cambiaVolumen(1)"></span>
+			</li>
+		</ul>
+		<ul class="list-inline">
+			<li>
+				<span class="in-list" aria-hidden="true" ></span>
+			</li>
+			<li>
+				<span class="in-list" aria-hidden="true" ></span>
+			</li>
+			<li>
+				<span class="in-list" aria-hidden="true" onclick="saveOrden()">Guardar Orden</span>
 			</li>
 		</ul>
 	</div>
@@ -112,6 +125,7 @@ color: #AAA;
 			trackName: canciones[i].titulo,
 			trackArtist: canciones[i].artista,
 			trackAlbum: "",
+			cancionid: canciones[i].id
 
 		}
 	}

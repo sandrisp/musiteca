@@ -270,4 +270,11 @@ def acciones_lista_has_cancion(lista_id):
 		canciones_usuario = ListaHasCancion.select_cancion_by_usuario_select_lista(usuario_sesion, lista_id)
 		return render_template("multiselect_canciones.html",canciones_usuario=canciones_usuario)
 
+	if request.method == 'POST':
+		lista = {}
+		lista["canciones"] = request.form.getlist("canciones")
+
+		for idx, val in enumerate(lista["canciones"]):
+			respuesta = ListaHasCancion.update_lista_has_cancion({"lista_id":lista_id, "cancion_id": val, "orden":idx})
+		return jsonify({"valido":True, "canciones":lista["canciones"]})
 	return jsonify({"valido":False, "error":"Método no disponible para el recurso lista."})

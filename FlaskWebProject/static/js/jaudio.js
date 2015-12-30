@@ -199,6 +199,10 @@
       // - playlist events
       self.$domPlaylist.on("click", ".jAudio--playlist-item", function(e)
       {
+      	if($(e.target).is('.exclude')){
+            e.preventDefault();
+            return;
+        }
         var item = $(this),
             track = item.data("track"),
             index = item.index();
@@ -319,12 +323,17 @@
             thumb         = a["thumb"],
             trackName     = a["trackName"],
             trackArtist   = a["trackArtist"],
-            trackAlbum    = a["trackAlbum"];
+            trackAlbum    = a["trackAlbum"],
+            cancionid    = a["cancionid"];
             trackDuration = "00:00";
 
-        template += "<div class='jAudio--playlist-item' data-track='" + file + "'>";
+        template += "<div class='jAudio--playlist-item' cancionid='"+cancionid+"'' item-num='"+i+"' data-track='" + file + "'>";
 
-        template += "<div class='jAudio--playlist-thumb'><span class='glyphicon glyphicon glyphicon-music' aria-hidden='true'></div>";
+        template += "<div class='jAudio--playlist-thumb'>";        
+        template += '<span class="glyphicon glyphicon-arrow-up exclude" style="padding:10px" aria-hidden="true" onclick="moveItem(1, this)"></span>'
+        template += '<span class="glyphicon glyphicon-arrow-down exclude" style="padding:10px" aria-hidden="true" onclick="moveItem(-1, this)"></span>';
+        template += "<span class='glyphicon glyphicon glyphicon-music' style='padding:10px' aria-hidden='true'>";
+        template += "</div>";
 
         template += "<div class='jAudio--playlist-meta-text'>";
         template += "<h4>" + trackName + "</h4>";

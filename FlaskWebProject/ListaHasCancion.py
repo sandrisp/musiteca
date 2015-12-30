@@ -40,7 +40,7 @@ def valida_lista_has_cancion(lista_has_cancion):
 	if "orden" in lista_has_cancion:
 		orden = lista_has_cancion["orden"]
 		try:
-			if int(orden)<=0:
+			if int(orden)<0:
 				error["orden"] = (u"Debe ser un número positivo mayor que 0.")
 		except Exception as inst:
 			error["orden"] = (u"Debe ser un número positivo mayor que 0.")
@@ -94,7 +94,7 @@ def select_canciones_by_lista(lista_id):
 				FROM lista_has_cancion lhc 
 				INNER JOIN cancion ca ON lhc.cancion_id=ca.id 
 				WHERE lhc.lista_id=%s
-				ORDER BY lhc.orden"""
+				ORDER BY lhc.orden ASC"""
 	cursor.execute(sql, [int(lista_id)])
 	existe = cursor.fetchall()
 	cursor.close() 
@@ -127,10 +127,10 @@ def update_lista_has_cancion(lista_has_cancion):
 		respuesta = {"valido": False, "error":"Para actualizar se necesita solo el lista_id, cancion_id y orden"}
 		return respuesta
 
-	respuesta = valida_lista_has_cancion(lista_has_cancion)
+	#respuesta = valida_lista_has_cancion(lista_has_cancion)
 	
-	if not respuesta["valido"]:
-		return respuesta
+	#if not respuesta["valido"]:
+		#return respuesta
 
 	lista_id = lista_has_cancion["lista_id"];
 	cancion_id = lista_has_cancion["cancion_id"];
@@ -148,7 +148,7 @@ def update_lista_has_cancion(lista_has_cancion):
 		affected_count = cursor.execute(sql, [orden, int(lista_id), int(cancion_id)])
 		conn.commit()
 
-		salida = {"valido": True, "lista": select_canciones_by_lista(lista_id)}
+		salida = {"valido": True, "lista": lista_has_cancion}
 	except Exception as inst:
 		salida = {"valido": False, "error": inst}
 	finally:
