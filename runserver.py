@@ -64,5 +64,5 @@ if __name__ == '__main__':
     except ValueError:
         PORT = 5555
     app.secret_key = 'A0Zr98j/4yX R~XHH!jmN]LWX/,?RT'
-    app.run(HOST, PORT, debug=True)
+    app.run(HOST, PORT, debug=False)
     app.session_interface = ItsdangerousSessionInterface()
